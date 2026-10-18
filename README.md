@@ -14,7 +14,7 @@
 - The original 60-pair dataset and its records remain separate in the collector. Its former public write route is retired; the archived choices remain available to the owner through authenticated export. Historical app data and 106 web thumbnails remain in this repository and are not mixed with current results.
 - `web/met_experience_data.json`, `web/met_catalog.json` and `web/met-art/` supply the public experience. The 5,326 resized JPEGs are derived from Met Open Access images; the full originals and model checkpoints are not part of the website.
 
-The web site is static and published from `web/` by GitHub Pages. The Cloudflare Worker in `worker/` validates and stores individual events in D1; no owner token or D1 credential belongs in the public web files. The current dataset uses the `experience_choices` table. The historical 60-pair `choices` table remains untouched. New events also store a coarse country code, approximate city and region, and the connecting IP supplied by Cloudflare, or unknown when unavailable. Earlier choices are unchanged. These fields are available only to the authenticated owner and are absent from public vote totals.
+The web site is static and published from `web/` by GitHub Pages. The Cloudflare Worker in `worker/` validates and stores individual events in D1; no owner token or D1 credential belongs in the public web files. The current dataset uses the `experience_choices` table. The historical 60-pair `choices` table remains untouched. New events also store a coarse country code, approximate city, region, postal code and coordinates, and the connecting IP supplied by Cloudflare, or unknown when unavailable. Earlier choices are unchanged. These fields are available only to the authenticated owner and are absent from public vote totals.
 
 ## AI use and authorship
 
@@ -40,7 +40,7 @@ Serve `web/` over HTTP for a browser preview. A choice is held on the device unt
 
 ## Publishing
 
-For changes to the choice dataset or collector, follow [worker setup](worker/README.md) and verify the dataset manifest, Worker health, test choice, and export before publishing `web/`. The About page describes saved choice fields, including approximate country and IP.
+For changes to the choice dataset or collector, follow [worker setup](worker/README.md) and verify the dataset manifest, Worker health, test choice, and export before publishing `web/`.
 
 The public website does not call an AI model when a visitor chooses. Its AI judgments were computed in advance.
 

@@ -53,6 +53,9 @@ CREATE TABLE IF NOT EXISTS experience_choices (
   client_ip TEXT CHECK (client_ip IS NULL OR length(client_ip) BETWEEN 3 AND 45),
   city_name TEXT CHECK (city_name IS NULL OR length(city_name) BETWEEN 1 AND 128),
   region_name TEXT CHECK (region_name IS NULL OR length(region_name) BETWEEN 1 AND 128),
+  postal_code TEXT CHECK (postal_code IS NULL OR length(postal_code) BETWEEN 1 AND 128),
+  latitude REAL CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
+  longitude REAL CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180),
   UNIQUE (session_id,round_id,pair_id),
   UNIQUE (session_id,round_id,position)
 );
