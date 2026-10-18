@@ -26,7 +26,7 @@ function makeRecord(pair, index = 1, overrides = {}) {
     leftId: pair.a, rightId: pair.b, choice: 'A', elapsedMs: 450,
     source: 'direct', position: index, layout: 'side-by-side',
     shownAt: '2026-10-03T12:00:00.000Z', chosenAt: '2026-10-03T12:00:00.450Z',
-    consent: true, profile: structuredClone(profile), ipNoticeVersion: 1, ...overrides,
+    consent: true, profile: structuredClone(profile), ...overrides,
   };
 }
 
@@ -42,15 +42,6 @@ function makeState(answered = 3) {
     queue: structuredClone(history),
   };
 }
-
-test('saved records accept both old and disclosed IP notice versions', () => {
-  const current=makeRecord(data.pairs[0]);
-  const older=structuredClone(current);
-  delete older.ipNoticeVersion;
-  assert.equal(validRecord(current,data,pairs),true);
-  assert.equal(validRecord(older,data,pairs),true);
-  assert.equal(validRecord({...current,ipNoticeVersion:2},data,pairs),false);
-});
 
 test('the full real dataset appears exactly once before the next cycle', () => {
   assert.equal(data.pairs.length, 594);

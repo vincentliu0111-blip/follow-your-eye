@@ -142,7 +142,6 @@ export function validRecord(record, data, pairsById) {
     && ['A', 'B', 'skip'].includes(record.choice)
     && Number.isInteger(record.elapsedMs) && record.elapsedMs >= 0 && record.elapsedMs <= 3600000
     && typeof record.consent === 'boolean' && validProfile(record.profile)
-    && (record.ipNoticeVersion === undefined || record.ipNoticeVersion === 1)
     && typeof record.source === 'string' && /^[a-z0-9][a-z0-9_-]{0,63}$/.test(record.source)
     && Number.isInteger(record.position) && record.position >= 1 && record.position <= ROUND_SIZE
     && ['side-by-side', 'stacked'].includes(record.layout)
