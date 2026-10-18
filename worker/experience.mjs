@@ -6,7 +6,8 @@ const FIELDS = ['id', 'sessionId', 'roundId', 'datasetVersion', 'pairId', 'leftI
   'choice', 'position', 'layout', 'source', 'shownAt', 'chosenAt', 'elapsedMs', 'profile', 'consent'];
 const CSV_FIELDS = ['id', 'session_id', 'round_id', 'dataset_version', 'pair_id', 'position',
   'left_artwork_id', 'right_artwork_id', 'choice', 'layout', 'source', 'mood', 'interests_json',
-  'language', 'shown_at', 'chosen_at', 'elapsed_ms', 'received_at', 'environment', 'country_code', 'client_ip'];
+  'language', 'shown_at', 'chosen_at', 'elapsed_ms', 'received_at', 'environment', 'country_code',
+  'client_ip', 'city_name', 'region_name'];
 const MOODS = ['', 'calm', 'curious', 'energized', 'reflective'];
 const INTERESTS = ['landscape', 'people', 'nature', 'abstract', 'stories', 'details'];
 const LANGUAGES = ['', 'en', 'zh', 'es', 'fr', 'other'];
@@ -41,6 +42,13 @@ function countryCode(request) {
   const code = request.cf?.country;
   return typeof code === 'string' && /^[A-Z]{2}$/.test(code) && code !== 'XX'
     ? code : null;
+}
+
+function locationName(value) {
+  if (typeof value !== 'string') return null;
+  const name = value.trim();
+  return name.length > 0 && name.length <= 128 && !/[\u0000-\u001f\u007f]/u.test(name)
+    ? name : null;
 }
 
 function clientIp(request) {
@@ -98,16 +106,18 @@ async function save(request, env) {
     .bind(value.sessionId).first() ? 'test' : 'production';
   const country = countryCode(request);
   const ip = clientIp(request);
+  const city = locationName(request.cf?.city);
+  const region = locationName(request.cf?.region);
   const payload = JSON.stringify(value);
   const result = await env.DB.prepare(`INSERT OR IGNORE INTO experience_choices
     (id,session_id,round_id,dataset_version,pair_id,position,left_artwork_id,right_artwork_id,
      choice,layout,source,mood,interests_json,language,shown_at,chosen_at,elapsed_ms,
-     received_at,environment,payload_json,country_code,client_ip)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(
+     received_at,environment,payload_json,country_code,client_ip,city_name,region_name)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(
       value.id, value.sessionId, value.roundId, value.datasetVersion, value.pairId, value.position,
       value.leftId, value.rightId, value.choice, value.layout, value.source, value.profile.mood,
       JSON.stringify(value.profile.interests), value.profile.language, value.shownAt, value.chosenAt,
-      value.elapsedMs, new Date().toISOString(), environment, payload, country, ip).run();
+      value.elapsedMs, new Date().toISOString(), environment, payload, country, ip, city, region).run();
   if (result.meta?.changes === 1) return json({ok:true,duplicate:false,id:value.id}, 201);
   const previous = await env.DB.prepare(`SELECT id,payload_json FROM experience_choices
     WHERE id = ? OR (session_id = ? AND round_id = ? AND (pair_id = ? OR position = ?)) LIMIT 1`)

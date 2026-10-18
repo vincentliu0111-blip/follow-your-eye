@@ -51,6 +51,8 @@ CREATE TABLE IF NOT EXISTS experience_choices (
   payload_json TEXT NOT NULL,
   country_code TEXT CHECK (country_code IS NULL OR country_code GLOB '[A-Z][A-Z]'),
   client_ip TEXT CHECK (client_ip IS NULL OR length(client_ip) BETWEEN 3 AND 45),
+  city_name TEXT CHECK (city_name IS NULL OR length(city_name) BETWEEN 1 AND 128),
+  region_name TEXT CHECK (region_name IS NULL OR length(region_name) BETWEEN 1 AND 128),
   UNIQUE (session_id,round_id,pair_id),
   UNIQUE (session_id,round_id,position)
 );
