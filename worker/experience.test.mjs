@@ -194,11 +194,11 @@ test('owner IP summary groups separate anonymous sessions without public exposur
   assert.equal((await call(env,'/experience/ips')).status,404);
 });
 
-test('choices from an older page still save but do not gain an IP', async () => {
+test('choices from an older page save the connecting IP when available', async () => {
   const DB=database(), env={DB,ADMIN_TOKEN:'owner-secret',ALLOWED_ORIGIN:origin};
   const older=event();
   delete older.ipNoticeVersion;
   assert.equal(validateExperienceEvent(older),null);
   assert.equal((await call(env,'/experience/choices','POST',older,null,{ip:'198.51.100.8'})).status,201);
-  assert.equal(DB.sqlite.prepare('SELECT client_ip FROM experience_choices WHERE id = ?').get(older.id).client_ip,null);
+  assert.equal(DB.sqlite.prepare('SELECT client_ip FROM experience_choices WHERE id = ?').get(older.id).client_ip,'198.51.100.8');
 });

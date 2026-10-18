@@ -97,7 +97,7 @@ async function save(request, env) {
   const environment = await env.DB.prepare('SELECT session_id FROM test_sessions WHERE session_id = ?')
     .bind(value.sessionId).first() ? 'test' : 'production';
   const country = countryCode(request);
-  const ip = value.ipNoticeVersion === 1 ? clientIp(request) : null;
+  const ip = clientIp(request);
   const payload = JSON.stringify(value);
   const result = await env.DB.prepare(`INSERT OR IGNORE INTO experience_choices
     (id,session_id,round_id,dataset_version,pair_id,position,left_artwork_id,right_artwork_id,
