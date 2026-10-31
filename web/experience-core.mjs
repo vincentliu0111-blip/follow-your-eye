@@ -172,6 +172,8 @@ export function isValidState(state, data) {
     const records = state.history.filter(record => record.roundId === state.roundId);
     if (records.length !== state.index || !records.every((record, i) => record.pairId === state.deck[i].pairId && record.leftId === state.deck[i].leftId && record.rightId === state.deck[i].rightId && record.position === i + 1)) return false;
     const byId = new Map(state.history.map(record => [record.id, record]));
+    if (state.rejectedIds !== undefined && (!Array.isArray(state.rejectedIds) || new Set(state.rejectedIds).size !== state.rejectedIds.length || !state.rejectedIds.every(id => byId.has(id) && !state.queue.some(r => r.id === id)))) return false;
+    for(const key of ['entryArtworkId','nextArtworkId']) if(state[key] != null && (typeof state[key] !== 'string' || !data.artworks[state[key]])) return false;
     if (!state.queue.every(record => record.consent === true && JSON.stringify(record) === JSON.stringify(byId.get(record.id)))) return false;
     if (new Set(state.queue.map(record => record.id)).size !== state.queue.length || (!state.consent && state.queue.length)) return false;
     return true;

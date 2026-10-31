@@ -26,14 +26,22 @@ The public `web/agreement_stats.json` contains aggregate statistics only. `tools
 
 To refresh the snapshot, run `python3 tools/agreement_stats.py --human-csv /path/to/private-choices.csv --output web/agreement_stats.json` with a privately prepared export. The displayed numbers are descriptive; anonymous sessions are not verified people, and repeated choices and pair exposure limit inference.
 
+## Artwork discovery and connectivity
+
+Forty static artwork pages at `/artworks/` are generated from the existing Met catalog and an explicit selection in `Data/artwork_page_selection.json`. Each has source metadata, a looking exercise, a canonical URL, structured data, related links, and an entry to an already evaluated comparison containing that work. Generate with `node tools/build_artwork_pages.mjs`; verify with `node tools/build_artwork_pages.mjs --check`. These pages are in the sitemap; search ranking and indexing are not guaranteed. Descriptive metadata preserves the museum's uncertainty; looking prompts are editorial exercises, not museum commentary.
+
+An artwork link preserves an unfinished round and starts the requested work in the next round. Entry source is stored as `artwork-<Met ID>` on the round's choice events. These directed entries should be distinguished from ordinary entries in analysis. Reloading the same entry does not keep scheduling it again.
+
+`/connection.html` performs read-only configuration and public-count connectivity checks, without sending a choice or registering a test session. A successful check does not prove POST writes or mainland-China reachability. The current collector remains unchanged. Mainland upload availability requires tests from actual local networks; merely changing to a custom domain is not a verified fix.
+
 ## Local checks
 
 ```sh
-node --test tests/experience-core.test.mjs tests/experience-storage.test.mjs tests/experience-connectivity.test.mjs tests/met-experience.test.mjs
+node --test tests/experience-core.test.mjs tests/experience-storage.test.mjs tests/experience-connectivity.test.mjs tests/met-experience.test.mjs tests/artwork-pages.test.mjs
 python3 -m unittest discover -s tests -p 'test_agreement_stats.py'
 ```
 
-Serve `web/` over HTTP for a browser preview. The next pair pauses after a failed request and offers a retry.
+Serve `web/` over HTTP for a browser preview. Choices are stored locally and uploaded in the background; a network failure does not block the next pair or the local round result. Retry preserves event IDs. Permanent event rejections remain in local history and do not block later uploads. If browser storage fails, progress stays in the current tab only.
 
 ## Publishing
 

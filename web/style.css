@@ -242,3 +242,6 @@
 
 .summary-heading .round-kappa{margin:12px 0 0;color:#d6e3cf;font-size:11px;line-height:1.55}
 .comparison-tile .tile-kappa{margin-top:3px;color:#e4f2c7;font-size:11px;font-weight:700}
+
+/* Saving remains visible without interrupting the choice or result view. */
+.contribution-bar{flex-wrap:wrap}.sync-actions{font-size:12px;line-height:1.7}.sync-actions p{margin:4px 0;color:var(--muted)}.entry-notice{padding:17px 20px;margin:20px 0;background:#eef1e5;border-radius:10px;font-size:13px;line-height:1.7}.entry-notice p{margin:0 0 5px}.entry-notice a,.artwork-page-link{text-decoration:underline;text-underline-offset:3px}.entry-notice button{margin-left:16px}.artwork-page-link{display:block;margin:16px 0;font-size:13px}.artwork-page-link[hidden]{display:none}

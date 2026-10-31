@@ -1,4 +1,7 @@
-import {buildRoundWithPreference, agreement, cohenKappa, getInsight, chosenArtwork, isValidState, MOODS, INTERESTS} from './experience-core.mjs?v=20261018-public-v1';
+import {buildRoundWithPreference, agreement, cohenKappa, getInsight, chosenArtwork, isValidState, MOODS, INTERESTS} from './experience-core.mjs?v=20261030-discovery-v1';
+
+import {applyArtworkEntry, buildArtworkRound} from './artwork-entry.mjs?v=20261030-discovery-v1';
+import {ARTWORK_PAGES} from './artwork-pages.mjs?v=20261030-discovery-v1';
 
 const $ = id => document.getElementById(id);
 // A new schema never backfills untimed choices from earlier prototypes.
@@ -51,6 +54,37 @@ Object.assign(COPY.zh, {
   saveFailed:'这次选择暂存在当前设备，还没有在线保存。请检查网络后重试。',
   tapZoom:'轻点画作放大',
 });
+
+Object.assign(COPY.en, {
+  unavailable:'Online saving is unavailable. You can keep choosing.',
+  connectionProblem:'Online saving is unavailable. Keep choosing; retry syncing when connected.',
+  pending:n=>`${n} choice${n===1?'':'s'} waiting to sync. You can keep choosing.`,
+  syncingChoices:n=>`Syncing ${n} choice${n===1?'':'s'}… You can keep choosing.`,
+  localPending:'Saved in this browser; not yet saved online. You can keep choosing.',
+  memoryPending:'Not saved online. Progress stays in this tab only; keep it open.',
+  rejected:'Some choices were not accepted online. They remain in your local history.',
+  artworkPage:'Explore this painting ↗', backArtwork:'Back to the painting',
+  queuedArtwork:'Your current round is safe. The painting you opened will start your next round.',
+  startArtwork:'Start the next round with this painting',
+  entryArtwork:'Your first comparison includes the painting you opened.',
+  historyFull:'This browser has reached its choice-history limit. Existing choices are safe.',
+  communityNote:'Collected votes from online saves; your unsynced choices are not included.',
+});
+Object.assign(COPY.zh, {
+  unavailable:'在线保存暂不可用，你仍可继续选画。',
+  connectionProblem:'在线保存暂不可用。可以继续选画，联网后重试同步。',
+  pending:n=>`${n} 条选择等待同步，你可以继续选画。`,
+  syncingChoices:n=>`正在同步 ${n} 条选择，你可以继续选画。`,
+  localPending:'已保存在此浏览器，尚未在线保存。你可以继续选画。',
+  memoryPending:'尚未在线保存，进度仅暂存在此页面，请保持页面打开。',
+  rejected:'部分选择未被在线接收，仍保留在本地作答记录中。',
+  artworkPage:'了解这幅作品 ↗', backArtwork:'返回作品页',
+  queuedArtwork:'当前一轮的进度已保留。你打开的作品会出现在下一轮的第一组。',
+  startArtwork:'从这幅作品开始下一轮',
+  entryArtwork:'第一组比较包含你刚才打开的作品。',
+  historyFull:'此浏览器的作答记录已达上限，已有选择仍保留。',
+  communityNote:'投票统计仅包含已在线保存的选择，尚未同步的选择不计入。',
+});
 const t = (key, ...args) => typeof COPY[locale][key] === 'function' ? COPY[locale][key](...args) : COPY[locale][key] ?? COPY.en[key] ?? key;
 let data, pairsById, playablePairs, preferredOpening, westernPairIds, state;
 let view = 'play', busy = false, displayKey = '', renderToken = 0;
@@ -67,6 +101,9 @@ function translate() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
   $('languageToggle').textContent = locale === 'en' ? '中文' : 'EN';
   $('languageToggle').setAttribute('aria-label', locale === 'en' ? 'Switch interface to Chinese' : 'Switch interface to English');
+  $('detailPage').textContent=t('artworkPage');
+  $('backArtwork').textContent=t('backArtwork');
+  $('startArtworkRound').textContent=t('startArtwork');
   $('settingsOpen').setAttribute('aria-label', t('settings'));
   $('chooseLeft').setAttribute('aria-label', t('chooseLeft'));
   $('chooseRight').setAttribute('aria-label', t('chooseRight'));
@@ -178,7 +215,12 @@ async function load() {
     preferredOpening = data.openingPairs.filter(id => westernPairs.has(id));
     storageKey = `${STORAGE_BASE_KEY}:${data.version}`;
     pairsById = new Map(data.pairs.map(pair => [pair.id,pair]));
-    state = restore(); state.consent = true; $('contribute').checked = true;
+    state = restore();
+    const entry = new URLSearchParams(location.search).get('artwork');
+    await mutateState(current=>{
+      current.consent=true;
+      if(ARTWORK_PAGES[entry])applyArtworkEntry(current,entry,playablePairs,{openingPairIds:preferredOpening,preferredPairIds:westernPairIds});
+    });
     $('loading').hidden = true; $('contributionBar').hidden = false;
     translate(); renderPlay(); checkCollector();
   } catch {
@@ -188,10 +230,9 @@ async function load() {
 function setViews(next) {
   view = next;
   const completed = state.index >= state.deck.length;
-  const pending = state.queue.length > 0;
-  $('pendingView').hidden = next !== 'play' || !pending;
-  $('playView').hidden = next !== 'play' || completed || pending;
-  $('summaryView').hidden = next !== 'play' || !completed || pending;
+  $('playView').hidden = next !== 'play' || completed;
+  $('summaryView').hidden = next !== 'play' || !completed;
+  renderEntry();
   $('collectionView').hidden = next !== 'collection';
   $('playNav').classList.toggle('active', next === 'play');
   $('collectionNav').classList.toggle('active', next === 'collection');
@@ -201,7 +242,6 @@ function setViews(next) {
 function renderPlay() {
   if (!state) return;
   setViews('play');
-  if (state.queue.length) { updateSync(); return; }
   if (state.index >= state.deck.length) { renderSummary(); return; }
   const item = state.deck[state.index];
   $('roundLabel').textContent = t('round', state.roundNumber);
@@ -228,9 +268,9 @@ function renderPlay() {
       });
       if (token !== renderToken || state.roundId !== expectedRound || state.index !== expectedIndex) {displayKey='';renderPlay();return;}
       const complete = loaded.every(Boolean);
-      $('chooseLeft').disabled = $('chooseRight').disabled = !complete || !collector;
+      $('chooseLeft').disabled = $('chooseRight').disabled = !complete;
       $('zoomLeft').disabled = !loaded[0]; $('zoomRight').disabled = !loaded[1];
-      $('skipPair').disabled = !collector;
+      $('skipPair').disabled = false;
       if (!complete) {$('announcement').textContent=t('imageError');$('pairNotice').textContent=t('imageError');$('pairNotice').hidden=false;}
     });
     const next = state.deck[state.index+1];
@@ -247,12 +287,13 @@ function setImage(img, art) {
   });
 }
 async function choose(side) {
-  if (!state || busy || !collector || state.queue.length || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
+  if (!state || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
   if (side !== 'skip' && $(side === 'left' ? 'chooseLeft' : 'chooseRight').disabled) return;
   busy = true;
   const expectedRound = state.roundId, expectedIndex = state.index;
   const accepted = await mutateState(current => {
     if (current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
+    if(current.history.length>=10000){storageMessage='historyFull';updateStorageWarning();return false;}
     const item = current.deck[current.index], pair = pairsById.get(item.pairId);
     const chosenId = side === 'left' ? item.leftId : item.rightId;
     const choice = side === 'skip' ? 'skip' : chosenId === pair.a ? 'A' : 'B';
@@ -260,7 +301,7 @@ async function choose(side) {
     if (Date.parse(chosenAt) < Date.parse(current.presentation.shownAt)) return false;
     const stacked=Math.abs($('chooseLeft').getBoundingClientRect().top-$('chooseRight').getBoundingClientRect().top)>5;
     const record = {id:uuid(),sessionId:current.sessionId,roundId:current.roundId,datasetVersion:data.version,pairId:pair.id,leftId:item.leftId,rightId:item.rightId,choice,position:current.index+1,layout:stacked?'stacked':'side-by-side',source:current.source,shownAt:current.presentation.shownAt,chosenAt,elapsedMs:Math.min(3600000,Math.max(0,Date.parse(chosenAt)-Date.parse(current.presentation.shownAt))),profile:copyProfile(current.profile),consent:true};
-    current.history.push(record); current.seen.push(pair.id); current.index++; current.presentation=null;
+    current.history.push(record); if(!current.seen.includes(pair.id))current.seen.push(pair.id); current.index++; current.presentation=null;
     current.queue.push(record);
     return true;
   });
@@ -273,7 +314,7 @@ async function choose(side) {
   }
   $('announcement').textContent=t(side==='skip'?'skippedAnnounce':'picked');
   renderPlay();
-  await syncChoices();
+  void syncChoices();
   window.setTimeout(()=>{busy=false;if(view==='play')renderPlay();else renderCollection();},matchMedia('(prefers-reduced-motion: reduce)').matches?30:220);
 }
 function currentRecords() { return state.history.filter(record => record.roundId === state.roundId); }
@@ -342,6 +383,7 @@ function renderCollection() {
   const ids=uniquePicks([...state.history].reverse());$('collectionIntro').textContent=t('collectionIntro',ids.length);$('collectionEmpty').hidden=ids.length>0;renderGallery($('collectionGrid'),ids);
 }
 function openArtwork(id) {
+  const page=ARTWORK_PAGES[id];$('detailPage').hidden=!page;if(page)$('detailPage').href=page;
   const art=data.artworks[id];$('detailImage').src=art.image;$('detailImage').alt=art.title;$('artworkTitle').textContent=art.title;$('detailArtist').textContent=artworkText(art,'artist');$('detailDate').textContent=artworkText(art,'date');$('detailSource').href=art.sourceUrl;setZoom(1,0,0);$('artworkDialog').showModal();
 }
 function setZoom(scale,x=zoomX,y=zoomY) {
@@ -407,7 +449,11 @@ async function nextRound() {
   if(!state||busy)return;
   await mutateState(current=>{
     if(current.index < current.deck.length) return false;
-    const next=buildRoundWithPreference(playablePairs,current.seen,{openingPairIds:preferredOpening,preferredPairIds:westernPairIds});if(next.newCycle)current.seen=[];
+    const entry=current.nextArtworkId;
+    const options={openingPairIds:preferredOpening,preferredPairIds:westernPairIds};
+    const next=entry?buildArtworkRound(playablePairs,current.seen,entry,options):buildRoundWithPreference(playablePairs,current.seen,options);
+    if(next.newCycle)current.seen=[];
+    if(entry){current.source=`artwork-${entry}`;current.entryArtworkId=entry;current.nextArtworkId=null;}
     current.deck=next.deck;current.index=0;current.roundId=uuid();current.roundNumber++;current.presentation=null;
   });
   selectedComparison=null;displayKey='';renderPlay();window.scrollTo({top:0,behavior:'instant'});$('main').focus({preventScroll:true});
@@ -422,8 +468,19 @@ function renderSettings() {
   }));
   $('profileLanguage').value=state.profile.language;
 }
+function renderEntry() {
+  const id=state.nextArtworkId || state.entryArtworkId;
+  const first=state.deck[0];
+  const active=state.nextArtworkId || [first?.leftId,first?.rightId].includes(id);
+  const page=active && ARTWORK_PAGES[id];
+  $('entryNotice').hidden=!page;
+  if(!page)return;
+  $('entryMessage').textContent=t(state.nextArtworkId?'queuedArtwork':'entryArtwork');
+  $('backArtwork').href=page;
+  $('startArtworkRound').hidden=!state.nextArtworkId || state.index<state.deck.length;
+}
 async function checkCollector() {
-  if(checkingCollector || !state)return;
+  if(checkingCollector || syncing || !state)return;
   checkingCollector=true;
   try {
     const configResponse=await fetchWithTimeout('./collection_config.json',{cache:'no-cache'},10000);
@@ -438,20 +495,20 @@ async function checkCollector() {
   catch{collector=false;connectionProblem=true;collectorEndpoint='';}
   finally{checkingCollector=false;}
   updateSync();
-  if(collector) {
-    if(state.queue.length)await syncChoices();
-    else if(view==='play')renderPlay();
-    const ready=$('leftImage').complete&&$('leftImage').naturalWidth>0&&$('rightImage').complete&&$('rightImage').naturalWidth>0;
-    if(!state.queue.length&&state.index<state.deck.length){$('chooseLeft').disabled=$('chooseRight').disabled=!ready;$('skipPair').disabled=false;}
-  } else {$('chooseLeft').disabled=$('chooseRight').disabled=$('skipPair').disabled=true;}
+  if(collector && state.queue.length)void syncChoices();
 }
 function updateSync() {
   if(!state)return;
-  $('syncStatus').textContent=rejected?t('rejected'):state.queue.length?t('pending',state.queue.length):!collector?t('unavailable'):hasSynced?t('savedStudy'):t('collectorReady');
-  $('connectionNotice').hidden=!connectionProblem || !!state.queue.length;
-  $('pendingExplanation').textContent=state.queue.length && !syncing && (!collector || rejected)
-    ? t('saveFailed') : t('pendingExplanation');
-  $('retrySave').hidden=!state.queue.length || syncing;
+  const failed=(state.rejectedIds?.length ?? 0)>0;
+  const pending=state.queue.length;
+  $('syncStatus').textContent=pending?t(syncing?'syncingChoices':'pending',pending):failed?t('rejected'):!collector?t('unavailable'):hasSynced?t('savedStudy'):t('collectorReady');
+  $('connectionNotice').hidden=!connectionProblem || !!pending;
+  $('syncExplanation').hidden=!pending;
+  $('syncExplanation').textContent=pending?t(memoryOnly?'memoryPending':'localPending'):'';
+  $('rejectedNotice').hidden=!failed || !pending;
+  $('rejectedNotice').textContent=failed?t('rejected'):'';
+  $('retrySave').hidden=!pending || syncing;
+  $('retrySave').disabled=syncing;
 }
 async function syncChoices() {
   if(syncing||!state?.queue.length||!collector)return;
@@ -462,12 +519,23 @@ async function syncChoices() {
       const event=state.queue[0];syncController=new AbortController();const timer=setTimeout(()=>syncController.abort(),20000);
       let response;
       try{response=await fetch(`${collectorEndpoint}/experience/choices`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(event),signal:syncController.signal});}finally{clearTimeout(timer);}
-      if(!response.ok){if(response.status>=400&&response.status<500){rejected=true;}else{collector=false;}break;}
+      if(!response.ok){
+        // A malformed event must not block later valid choices. Auth, rate limits,
+        // routing failures and server errors remain retryable with the same ID.
+        if([400,409,413,422].includes(response.status)){
+          await mutateState(current=>{
+            current.rejectedIds=[...new Set([...(current.rejectedIds||[]),event.id])];
+            current.queue=current.queue.filter(item=>item.id!==event.id);
+          });
+          rejected=true;updateSync();continue;
+        }
+        collector=false;connectionProblem=true;break;
+      }
       const result=await response.json();if(result.ok!==true || result.id!==event.id)throw new Error('Invalid acknowledgment');
-      await mutateState(current=>{current.queue=current.queue.filter(item=>item.id!==event.id);});hasSynced=true;rejected=false;updateSync();
+      await mutateState(current=>{current.queue=current.queue.filter(item=>item.id!==event.id);});hasSynced=true;updateSync();
     }
-  }catch{collector=false;}
-  finally{syncing=false;syncController=null;updateSync();if(view==='play')renderPlay();if(view==='play'&&state.index>=state.deck.length&&!state.queue.length)renderComparisons(currentRecords());}
+  }catch{collector=false;connectionProblem=true;}
+  finally{syncing=false;syncController=null;updateSync();if(view==='play'&&state.index>=state.deck.length)renderComparisons(currentRecords());}
 }
 
 $('chooseLeft').addEventListener('click',()=>choose('left'));
@@ -496,6 +564,7 @@ $('backToPlay').addEventListener('click',()=>{renderPlay();window.scrollTo({top:
 $('settingsOpen').addEventListener('click',()=>{renderSettings();$('settingsDialog').showModal();});
 $('settingsDone').addEventListener('click',()=>$('settingsDialog').close());
 $('profileLanguage').addEventListener('change',async event=>{const language=event.target.value;await mutateState(current=>{current.profile.language=language;});});
+$('startArtworkRound').addEventListener('click',nextRound);
 $('retrySave').addEventListener('click',checkCollector);
 $('retryConnection').addEventListener('click',checkCollector);
 $('languageToggle').addEventListener('click',()=>{locale=locale==='en'?'zh':'en';try{localStorage.setItem(LOCALE_KEY,locale);}catch{}translate();});

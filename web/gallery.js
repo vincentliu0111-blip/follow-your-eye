@@ -1,5 +1,7 @@
 import {orderForBrowse} from './gallery-order.mjs?v=20261013-v2';
 
+import {ARTWORK_PAGES} from './artwork-pages.mjs?v=20261030-discovery-v1';
+
 const $ = id => document.getElementById(id);
 const PAGE_SIZE = 60;
 const LOCALE_KEY = 'follow-your-eye-language';
@@ -40,6 +42,7 @@ function translate() {
   for (const [id,key] of Object.entries({playLink:'play',galleryLink:'gallery',aboutLink:'about',privateLabel:'private',eyebrow:'eyebrow',heroTitle:'title',heroIntro:'intro',playButton:'playButton',searchLabel:'searchLabel',pilotLabel:'pilot',loadMore:'more',errorTitle:'errorTitle',errorText:'errorText',footerText:'footer',sourcePolicy:'policy',dialogEyebrow:'dialogEyebrow',dialogSource:'source',dialogNote:'note',galleryZoomReset:'zoomReset',galleryZoomHint:'zoomHint'})) $(id).textContent=t(key);
   $('galleryZoomIn').setAttribute('aria-label',t('zoomIn'));
   $('galleryZoomOut').setAttribute('aria-label',t('zoomOut'));
+  $('featuredLink').textContent=locale==='zh'?'从 40 幅作品开始探索 →':'Explore 40 paintings in depth →';
   $('searchArt').placeholder=t('searchPlaceholder');
   $('languageToggle').textContent=locale==='en'?'中文':'EN';
   $('languageToggle').setAttribute('aria-label',locale==='en'?'Switch interface to Chinese':'切换为英文');
@@ -67,11 +70,11 @@ function renderResults(reset=false) {
   if(reset)$('galleryGrid').replaceChildren();
   const next=filtered.slice(shown,shown+PAGE_SIZE);
   $('galleryGrid').append(...next.map(art=>{
-    const button=document.createElement('button');button.type='button';button.className='met-card';button.setAttribute('aria-label',art.title);
+    const page=ARTWORK_PAGES[art.id];const button=document.createElement(page?'a':'button');if(page)button.href=page;else button.type='button';button.className='met-card';button.setAttribute('aria-label',art.title);
     const imageBox=document.createElement('span');imageBox.className='met-image';const img=document.createElement('img');img.src=art.image;img.alt='';img.loading='lazy';img.decoding='async';imageBox.append(img);
     const copy=document.createElement('span');copy.className='met-copy';const title=document.createElement('strong');title.textContent=art.title;const subtitle=document.createElement('small');subtitle.textContent=`${art.artist} · ${art.date}`;copy.append(title,subtitle);
     if(art.pilot){const badge=document.createElement('span');badge.className='met-badge';badge.textContent=t('pilotBadge');copy.append(badge);}
-    button.append(imageBox,copy);button.addEventListener('click',()=>openArtwork(art));return button;
+    button.append(imageBox,copy);if(!page)button.addEventListener('click',()=>openArtwork(art));return button;
   }));
   shown+=next.length;$('loadMore').hidden=shown>=filtered.length;
 }
