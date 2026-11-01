@@ -12,9 +12,9 @@
   <meta property="og:image" content="https://vincentliu.ai/img/436940.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <title>The idea — Follow Your Eye</title>
-  <link rel="stylesheet" href="style.css?v=20261012-v4">
+  <link rel="stylesheet" href="style.css?v=20261101-research-v3">
   <link rel="stylesheet" href="about.css?v=20261013-v2">
-  <script defer src="agreement-summary.js?v=20261014-v1"></script>
+  <script defer src="agreement-summary.js?v=20261101-research-v3"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -36,7 +36,16 @@
         <p id="agreementPeople"></p>
         <p id="agreementCohorts"></p>
         <p id="agreementLive">Loading the current saved-choice count…</p>
-        <p class="agreement-caveat">A CMU professor suggested adding a chance-adjusted comparison. Codex assisted with the analysis code and website display. Kappa adjusts for agreement expected from each side’s overall A/B choices. The labels “slight,” “fair” and “moderate” are conventions, not grades. The visitor intervals resample anonymous browser sessions, which are not verified people. Many choices in this snapshot arrived in a short period, and some sessions have timing records inconsistent with the site's normal one-at-a-time flow. Those records are not removed because of timing: the live count includes every saved non-skip A/B choice, and each visitor kappa includes all choices eligible for that comparison (excluding skips and exact prediction ties). The records do not establish whether each session was an independent person or what caused the timing discrepancy. Agreement says nothing about which choice is right. Kappa and its interval are a dated snapshot; only the saved-choice count above updates live.</p>
+        <p class="agreement-caveat">A CMU professor suggested adding a chance-adjusted comparison. Codex assisted with the analysis code and website display. Kappa adjusts for agreement expected from each side’s overall A/B choices. The labels “slight,” “fair” and “moderate” are conventions, not grades. The visitor intervals resample browser sessions identified by random IDs, which are not verified people. Many choices in this snapshot arrived in a short period, and some sessions have timing records inconsistent with the site's normal one-at-a-time flow. Those records are not removed because of timing: the live count includes every saved non-skip A/B choice, and each visitor kappa includes all choices eligible for that comparison (excluding skips and exact prediction ties). The records do not establish whether each session was an independent person or what caused the timing discrepancy. Agreement says nothing about which choice is right. Kappa and its interval are a dated snapshot; only the saved-choice count above updates live.</p>
+      </section>
+      <section id="research-data" aria-labelledby="research-data-title">
+        <h2 id="research-data-title">Research &amp; your data</h2>
+        <p><strong>Purpose.</strong> Vincent Liu collects choices and skips to study how human painting preferences compare with precomputed AI judgments and a feature model. The records support analysis of agreement, differences between painting pairs, and response patterns. Research summaries may be used in papers or project presentations; agreement is not an assessment of your ability or taste.</p>
+        <p><strong>What is recorded.</strong> Each response includes the painting pair, left/right positions, choice or skip, question order, screen layout, display and response times, elapsed time, entry-source label, data version, and randomly generated browser-session, round and response IDs. If you choose to provide mood, art interests or preferred language in settings, these are included with subsequent responses. The experience does not ask for your name, email address or date of birth.</p>
+        <p><strong>Your choice to participate.</strong> Participation is voluntary. Selecting a painting or skipping a pair submits a research response; there is no separate unrecorded voting mode. You can stop at any point or <a href="gallery.html">browse the gallery without submitting choices</a>. Loading pages still involves normal requests to the website’s hosting services. Stopping or closing the page does not delete responses already uploaded. Returning to the experience may retry previously queued responses.</p>
+        <p><strong>Storage and public results.</strong> Choices and optional settings are stored in this browser, and responses are uploaded to the project’s Cloudflare-hosted database. The project owner can access individual saved records. Public vote totals and agreement statistics combine responses rather than displaying individual records. Uploaded records remain stored after you leave or clear your browser data; this notice does not promise an automatic deletion date.</p>
+        <p><strong>Research status.</strong> This notice explains the current collection process. It is not a statement of IRB approval or an exemption determination, and it does not establish informed consent for responses collected before it was shown.</p>
+        <p lang="zh-CN"><a href="#research-data-zh">阅读中文版研究与数据说明 ↓</a></p>
       </section>
       <h2>Saving your choices</h2><p>Choices are kept in this browser and uploaded in the background. If online saving fails, you can keep choosing and see your round result. Waiting choices can sync when the connection returns while the site is open. Clearing browser data can remove unsynced choices; if browser storage is unavailable, progress stays in the current tab only. Public vote totals include only accepted online saves.</p>
       <h2>Artwork credits</h2>
@@ -58,8 +67,16 @@
             <p>结果里的“一致”只表示你和 AI 在这些画对上作出了相同选择，不代表判断正确，也不是美的客观分数。页面提到的亮度、饱和度、细节或对称性是图像测量值，不能解释你为什么喜欢一幅画。参与者也并非随机抽样；票数不等于独立人数，更不代表大众审美。</p>
             <div class="agreement-explainer" aria-labelledby="agreementHeadingZh"><h3 id="agreementHeadingZh">谁和谁意见一致？</h3>
               <p id="agreementAiZh">正在加载一致性统计快照……</p><p id="agreementRepeatZh"></p><p id="agreementPeopleZh"></p><p id="agreementCohortsZh"></p><p id="agreementLiveZh">正在读取当前已保存选择数……</p>
-              <p class="agreement-caveat">加入扣除碰巧一致的比较，来自一位 CMU 教授的建议；统计程序和网站展示由 Codex 协助实现。Kappa 会按双方总体 A/B 选择比例计算预期的一致。“轻微、一般、中等”只是常用约定，不是成绩。访客区间按匿名浏览器会话重新抽样，会话不等于已核实的人。本次快照有大量选择集中在短时间内，部分会话的时间记录与网站正常逐题保存流程不一致。这些记录不会因时间异常被剔除：实时总数计入所有已保存的非跳过 A/B 选择；访客 κ 计入各项比较中符合条件的全部选择（跳过与预测恰好打平者不计入该项 κ）。记录无法证明每个会话都来自独立真人，也无法确定时间差异的成因。这个指标也不能判断谁选得对。Kappa 和区间仍是定期快照，只有上方的已保存选择数实时更新。</p>
+              <p class="agreement-caveat">加入扣除碰巧一致的比较，来自一位 CMU 教授的建议；统计程序和网站展示由 Codex 协助实现。Kappa 会按双方总体 A/B 选择比例计算预期的一致。“轻微、一般、中等”只是常用约定，不是成绩。访客区间按以随机编号区分的浏览器会话重新抽样，会话不等于已核实的人。本次快照有大量选择集中在短时间内，部分会话的时间记录与网站正常逐题保存流程不一致。这些记录不会因时间异常被剔除：实时总数计入所有已保存的非跳过 A/B 选择；访客 κ 计入各项比较中符合条件的全部选择（跳过与预测恰好打平者不计入该项 κ）。记录无法证明每个会话都来自独立真人，也无法确定时间差异的成因。这个指标也不能判断谁选得对。Kappa 和区间仍是定期快照，只有上方的已保存选择数实时更新。</p>
             </div>
+          </section>
+          <section id="research-data-zh" aria-labelledby="research-data-title-zh">
+            <h3 id="research-data-title-zh">研究与数据说明</h3>
+            <p><strong>研究用途。</strong>Vincent Liu 收集选画与跳过记录，用于研究人类绘画偏好与预先计算的 AI 判断、图像特征模型之间的异同，包括选择一致程度、不同画对的差异和作答模式。研究汇总可能用于论文或项目展示；一致程度不代表你的能力或审美水平。</p>
+            <p><strong>记录内容。</strong>每次作答会记录画对、左右位置、选择或跳过、题序、屏幕布局、展示与作答时间、耗时、进入来源标签、数据版本，以及随机生成的浏览器会话、轮次和作答编号。如果你在设置中自愿填写心情、艺术兴趣或习惯语言，这些信息会随之后的作答一起提交。体验不要求提供姓名、邮箱或出生日期。</p>
+            <p><strong>自愿参与。</strong>选择或跳过画作会提交研究作答，目前没有不记录作答的投票模式。你可以随时停止，也可以<a href="gallery.html">只浏览画廊，不提交选择</a>。加载网页仍会向网站托管服务发送正常网络请求。停止参与或关闭网页不会删除已经上传的记录；返回选画体验后，之前等待上传的作答可能再次尝试同步。</p>
+            <p><strong>保存与公开展示。</strong>选择和可选设置会保存在此浏览器中，作答记录会上传至项目使用的 Cloudflare 数据库。项目负责人可以访问单条记录。公开票数和一致性统计是合并结果，不展示单条作答记录。离开网站或清除浏览器数据不会删除已上传记录；本说明不承诺自动删除期限。</p>
+            <p><strong>研究状态。</strong>这份说明用于解释当前数据收集流程，不代表已获得 IRB 批准或豁免认定，也不能证明在展示本说明之前收集的作答已经取得知情同意。</p>
           </section>
           <section><h3>选择如何保存</h3><p>选择会先保留在此浏览器，再尝试后台上传。在线保存失败时仍可继续选画并查看本轮结果；网站保持打开且连接恢复后，会再次尝试同步。清除浏览器数据可能丢失尚未同步的选择；浏览器存储不可用时，进度仅暂存在当前页面。公开票数仅包含已被在线接收的选择。</p></section>
           <section aria-labelledby="zh-credit"><h3 id="zh-credit">作品来源</h3><p>图片和作品资料来自<a href="https://www.metmuseum.org/about-the-met/policies-and-documents/open-access" target="_blank" rel="noopener noreferrer">大都会艺术博物馆开放资源</a>。作品能在线浏览，不代表它目前正在馆内展出。</p></section>
