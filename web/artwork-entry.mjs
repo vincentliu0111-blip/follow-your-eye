@@ -14,7 +14,7 @@ export function buildArtworkRound(pairs, seen, artworkId, options = {}) {
 
 export function applyArtworkEntry(state, artworkId, pairs, options = {}) {
   if (!pairs.some(p => p.a === artworkId || p.b === artworkId)) return false;
-  if (state.entryArtworkId === artworkId && state.source === `artwork-${artworkId}`) return false;
+  if (state.entryArtworkId === artworkId && state.source === `artwork-${artworkId}` && !state.nextArtworkId) return false;
   if (state.index > 0) {
     state.nextArtworkId = artworkId;
   } else {

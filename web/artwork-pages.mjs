@@ -41,3 +41,10 @@ export const ARTWORK_PAGES = Object.freeze({
   "437881": "/artworks/met-437881/",
   "438465": "/artworks/met-438465/"
 });
+export const ZH_ARTWORK_PAGES = Object.freeze({
+  "435868": "/zh/artworks/met-435868/",
+  "436526": "/zh/artworks/met-436526/",
+  "436528": "/zh/artworks/met-436528/",
+  "437301": "/zh/artworks/met-437301/",
+  "437881": "/zh/artworks/met-437881/"
+});

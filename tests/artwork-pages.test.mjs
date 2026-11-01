@@ -59,3 +59,8 @@ test('stored upload rejections must refer to retained history and cannot remain 
  const state={schema:2,datasetVersion:data.version,sessionId:uuid(1),roundId:uuid(2),roundNumber:1,index:1,deck:[{pairId:p.id,leftId:p.a,rightId:p.b}],seen:[p.id],history:[record],queue:[],source:'test',profile:record.profile,consent:true,presentation:null,rejectedIds:[record.id]};
  assert.equal(isValidState(state,data),true);state.queue=[record];assert.equal(isValidState(state,data),false);state.queue=[];state.rejectedIds=['absent'];assert.equal(isValidState(state,data),false);
 });
+
+test('returning to the current entry work explicitly replaces a different pending work without losing progress',()=>{
+ const [id,other]=Object.keys(ARTWORK_PAGES),state={index:3,deck:[{pairId:'keep'}],queue:[{id:'unsynced'}],history:[{id:'history'}],seen:[],source:`artwork-${id}`,entryArtworkId:id,nextArtworkId:other,presentation:{shownAt:'keep'}};
+ assert.equal(applyArtworkEntry(state,id,pairs),true);assert.equal(state.nextArtworkId,id);assert.equal(state.index,3);assert.equal(state.queue[0].id,'unsynced');assert.equal(state.history[0].id,'history');assert.equal(state.deck[0].pairId,'keep');
+});

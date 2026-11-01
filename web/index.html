@@ -16,7 +16,7 @@
   <title>Follow Your Eye — Choose the art you love</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%231b2926'/%3E%3Cpath d='M10 10h8v8h-8zm12 0h8v8h-8zm-12 12h8v8h-8zm12 0h8v8h-8z' fill='%23def28c'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css?v=20261030-discovery-v1">
-  <script type="module" src="app.js?v=20261030-discovery-v1"></script>
+  <script type="module" src="app.js?v=20261101-search-v1"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to the artworks</a>
@@ -69,7 +69,7 @@
       <p id="storageWarning" class="storage-warning" hidden role="status"></p>
     </main>
 
-    <footer class="site-footer"><span><span class="footer-star" aria-hidden="true">✳</span> <span data-i18n="footerTag">Art is for everyone. So is having an opinion.</span></span><div><span data-i18n="sourceCredit">Artworks from The Met Open Access</span><span class="footer-dot" aria-hidden="true">·</span><a href="about.html" data-i18n="aboutLink">About this experiment</a></div></footer>
+    <footer class="site-footer"><span><span class="footer-star" aria-hidden="true">✳</span> <span data-i18n="footerTag">Art is for everyone. So is having an opinion.</span></span><div><span data-i18n="sourceCredit">Artworks from The Met Open Access</span><span class="footer-dot" aria-hidden="true">·</span><a href="art-choices/">Art choices guide</a><a lang="zh-CN" href="zh/art-choices/">艺术选画指南</a><a href="about.html" data-i18n="aboutLink">About this experiment</a></div></footer>
   </div>
 
   <dialog id="settingsDialog" aria-labelledby="settingsTitle"><form method="dialog"><button class="dialog-close" aria-label="Close settings" value="cancel">×</button></form><p class="eyebrow" data-i18n="optionalSetup">OPTIONAL, ALWAYS</p><h2 id="settingsTitle" data-i18n="settingsTitle">Come as you are.</h2><p class="dialog-intro" data-i18n="settingsIntro">A little context, if you feel like sharing. These choices won’t change which artworks you see.</p><fieldset><legend data-i18n="moodTitle">What’s your mood today?</legend><div id="moodOptions" class="chip-options"></div></fieldset><fieldset><legend data-i18n="interestsTitle">What tends to catch your eye?</legend><div id="interestOptions" class="chip-options"></div></fieldset><label class="field-label" for="profileLanguage" data-i18n="profileLanguage">Which language do you feel most at home in?</label><select id="profileLanguage"><option value="" data-i18n="preferNot">Prefer not to say</option><option value="en">English</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option><option value="other" data-i18n="anotherLanguage">Another language / several languages</option></select><p class="caption" data-i18n="languageNote">Language is optional context, not a measure of culture or identity.</p><button class="primary-button dialog-done" id="settingsDone" type="button" data-i18n="done">Back to the art</button></dialog>

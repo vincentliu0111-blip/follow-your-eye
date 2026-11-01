@@ -1,6 +1,6 @@
 import {orderForBrowse} from './gallery-order.mjs?v=20261013-v2';
 
-import {ARTWORK_PAGES} from './artwork-pages.mjs?v=20261030-discovery-v1';
+import {ARTWORK_PAGES, ZH_ARTWORK_PAGES} from './artwork-pages.mjs?v=20261101-search-v1';
 
 const $ = id => document.getElementById(id);
 const PAGE_SIZE = 60;
@@ -70,7 +70,7 @@ function renderResults(reset=false) {
   if(reset)$('galleryGrid').replaceChildren();
   const next=filtered.slice(shown,shown+PAGE_SIZE);
   $('galleryGrid').append(...next.map(art=>{
-    const page=ARTWORK_PAGES[art.id];const button=document.createElement(page?'a':'button');if(page)button.href=page;else button.type='button';button.className='met-card';button.setAttribute('aria-label',art.title);
+    const page=(locale==='zh'&&ZH_ARTWORK_PAGES[art.id])||ARTWORK_PAGES[art.id];const button=document.createElement(page?'a':'button');if(page)button.href=page;else button.type='button';button.className='met-card';button.setAttribute('aria-label',art.title);
     const imageBox=document.createElement('span');imageBox.className='met-image';const img=document.createElement('img');img.src=art.image;img.alt='';img.loading='lazy';img.decoding='async';imageBox.append(img);
     const copy=document.createElement('span');copy.className='met-copy';const title=document.createElement('strong');title.textContent=art.title;const subtitle=document.createElement('small');subtitle.textContent=`${art.artist} · ${art.date}`;copy.append(title,subtitle);
     if(art.pilot){const badge=document.createElement('span');badge.className='met-badge';badge.textContent=t('pilotBadge');copy.append(badge);}

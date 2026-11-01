@@ -1,7 +1,7 @@
 import {buildRoundWithPreference, agreement, cohenKappa, getInsight, chosenArtwork, isValidState, MOODS, INTERESTS} from './experience-core.mjs?v=20261030-discovery-v1';
 
-import {applyArtworkEntry, buildArtworkRound} from './artwork-entry.mjs?v=20261030-discovery-v1';
-import {ARTWORK_PAGES} from './artwork-pages.mjs?v=20261030-discovery-v1';
+import {applyArtworkEntry, buildArtworkRound} from './artwork-entry.mjs?v=20261101-search-v1';
+import {ARTWORK_PAGES, ZH_ARTWORK_PAGES} from './artwork-pages.mjs?v=20261101-search-v1';
 
 const $ = id => document.getElementById(id);
 // A new schema never backfills untimed choices from earlier prototypes.
@@ -10,6 +10,12 @@ let storageKey = STORAGE_BASE_KEY;
 const LOCALE_KEY = 'follow-your-eye-language';
 let locale = 'en';
 try { locale = localStorage.getItem(LOCALE_KEY) === 'zh' ? 'zh' : 'en'; } catch {}
+// Explicit language links from static guides also set the interactive UI locale.
+const requestedLanguage = new URLSearchParams(location.search).get('lang');
+if (requestedLanguage === 'en' || requestedLanguage === 'zh') {
+  locale=requestedLanguage;
+  try { localStorage.setItem(LOCALE_KEY,locale); } catch {}
+}
 const COPY = {
   en: {
     play:'The experiment',metGallery:'Met gallery',collection:'Your collection',about:'The idea',private:'Public experience',loading:'Opening the gallery…',loadErrorTitle:'The gallery couldn’t open.',loadErrorText:'Check your connection and try again. Your saved picks will be here.',retry:'Try again',pendingTitle:'Saving your choice…',pendingExplanation:'Your next painting will appear after this choice is saved online.',retrySave:'Retry saving',eyebrow:'A LITTLE ART. A LITTLE INSTINCT.',title:'Trust your eye.',intro:'For anyone curious about art: choose the paintings you love and see where AI judges agree.',author:'By Vincent Liu',settings:'Make it yours',optional:'optional',roundNote:'10 choices. A new perspective.',thisOne:'Choose this one',keyboard:'Use ← → to choose · S to skip',skip:'Can’t decide? Skip this pair',revealNote:'Your perspective unfolds after the round.',roundComplete:'YOUR ROUND, REVEALED',summaryTitle:'A point of view. Yours.',smallDiscovery:'A SMALL DISCOVERY',insightLimit:'A glimpse of this round, not a label for your taste.',youAndAI:'YOU + AI JUDGES',inCommon:'in common',noScore:'Different taste is the whole point. This isn’t a score.',anotherRound:'Follow your curiosity.',anotherRoundSub:'A fresh set of artworks is waiting.',takeCloserLook:'TAKE A CLOSER LOOK',roundPicks:'The art that caught your eye',openArtwork:'Select an artwork to discover its story.',compareDetails:'Explore each choice & AI comparison',communityNote:'Collected votes from this public experience, including your own choice.',personalGallery:'YOUR PERSONAL GALLERY',collectionTitle:'A trail of curiosity.',backToPlay:'Keep exploring',collectionEmpty:'Your eye will lead the way.',collectionEmptyText:'Choose a few artworks and they’ll find a home here.',footerTag:'Art is for everyone. So is having an opinion.',sourceCredit:'Artworks from The Met Open Access',aboutLink:'About this experiment',optionalSetup:'OPTIONAL, ALWAYS',settingsTitle:'Come as you are.',settingsIntro:'A little context, if you feel like sharing. These choices won’t change which artworks you see.',moodTitle:'What’s your mood today?',interestsTitle:'What tends to catch your eye?',profileLanguage:'Which language do you feel most at home in?',preferNot:'Prefer not to say',anotherLanguage:'Another language / several languages',languageNote:'Language is optional context, not a measure of culture or identity.',done:'Back to the art',fromCollection:'FROM THE MET COLLECTION',detailInvitation:'Stay a little longer. Look for a detail you didn’t notice at first.',viewMet:'Explore at The Met',metNote:'Opens the museum’s official collection page. An online record doesn’t mean the artwork is currently on view.',on:'On',off:'Off',onlyDevice:'Saved in this browser only.',collectorReady:'Choose a painting to save it online.',savedStudy:'Your choice was saved online.',unavailable:'Online saving is unavailable. Please retry before choosing.',pending:n=>`${n} choice${n===1?'':'s'} waiting to sync.`,rejected:'Some choices could not be accepted. Your browser copy is safe.',round:n=>`ROUND ${String(n).padStart(2,'0')}`,pick:(n,total)=>`PICK ${String(n).padStart(2,'0')} OF ${total}`,summaryIntro:(p,s)=>`${p} artwork${p===1?'':'s'} chosen${s?`, ${s} pair${s===1?'':'s'} skipped`:''}. A little window into what moves you.`,shareSummary:(n,d)=>`This round, you and the AI judges chose the same artwork in ${n} of ${d} comparable pairs.`,judgeText:(n,d)=>`You chose the same artwork as the AI judges in ${n} of ${d} comparable pairs.`,modelText:(n,d)=>`Feature model: ${n} of ${d} choices in common.`,noComparisons:'No evaluated AI pairs in this round yet.',noModel:'No evaluated feature-model pairs in this round yet.',openMind:'Room for discovery.',openMindText:'Your choices took their own path this round. Keep exploring to see what catches your eye.',allSkippedTitle:'Take your time.',allSkippedText:'Nothing has to speak to you. A fresh round offers another place to start.',collectionIntro:n=>`${n} different artwork${n===1?'':'s'} you’ve chosen, gathered in one place.`,skipped:'You skipped this pair',yourPick:'Your pick',judges:'AI judges',model:'Feature model',support:'weighted support',prediction:'predicted probability',tie:'Tie',notAvailable:'Not available',samePick:'Same choice',differentPick:'Different choice',community:(n,total)=>`${n} of ${total} collected choices also picked this artwork.`,noCommunity:'No collected votes for this pair yet.',communityUnavailable:'Collected votes are unavailable.',imageError:'This artwork couldn’t load. You can skip this pair.',storageError:'Storage is full or unavailable. Keep using this tab; progress and settings now stay here only. Reloading may restore older progress and settings.',restoredError:'Your previous saved round couldn’t be restored. A new round is ready.',picked:'Choice selected; saving online…',skippedAnnounce:'Pair skipped; saving online…',leftArtwork:'Left artwork',rightArtwork:'Right artwork',chooseLeft:'Choose the left artwork',chooseRight:'Choose the right artwork',unknownArtist:'Artist not recorded',unknownDate:'Date not recorded',mood_calm:'Calm',mood_curious:'Curious',mood_energized:'Energized',mood_reflective:'Reflective',interest_landscape:'Landscapes',interest_people:'People',interest_nature:'Nature',interest_abstract:'Abstract forms',interest_stories:'Stories',interest_details:'Little details',
@@ -383,7 +389,7 @@ function renderCollection() {
   const ids=uniquePicks([...state.history].reverse());$('collectionIntro').textContent=t('collectionIntro',ids.length);$('collectionEmpty').hidden=ids.length>0;renderGallery($('collectionGrid'),ids);
 }
 function openArtwork(id) {
-  const page=ARTWORK_PAGES[id];$('detailPage').hidden=!page;if(page)$('detailPage').href=page;
+  const page=(locale==='zh'&&ZH_ARTWORK_PAGES[id])||ARTWORK_PAGES[id];$('detailPage').hidden=!page;if(page)$('detailPage').href=page;
   const art=data.artworks[id];$('detailImage').src=art.image;$('detailImage').alt=art.title;$('artworkTitle').textContent=art.title;$('detailArtist').textContent=artworkText(art,'artist');$('detailDate').textContent=artworkText(art,'date');$('detailSource').href=art.sourceUrl;setZoom(1,0,0);$('artworkDialog').showModal();
 }
 function setZoom(scale,x=zoomX,y=zoomY) {
@@ -472,7 +478,7 @@ function renderEntry() {
   const id=state.nextArtworkId || state.entryArtworkId;
   const first=state.deck[0];
   const active=state.nextArtworkId || [first?.leftId,first?.rightId].includes(id);
-  const page=active && ARTWORK_PAGES[id];
+  const page=active && ((locale==='zh'&&ZH_ARTWORK_PAGES[id])||ARTWORK_PAGES[id]);
   $('entryNotice').hidden=!page;
   if(!page)return;
   $('entryMessage').textContent=t(state.nextArtworkId?'queuedArtwork':'entryArtwork');

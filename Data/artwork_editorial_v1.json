@@ -1,0 +1,261 @@
+{
+  "version": "focused-art-guides-v1",
+  "translationNote": "Chinese titles and artist names are site translations, not asserted museum official Chinese labels.",
+  "artworks": {
+    "435868": {
+      "zhTitle": "玩纸牌的人",
+      "zhArtist": "保罗·塞尚",
+      "zhDate": "1890至1892年",
+      "zhMedium": "布面油画",
+      "en": {
+        "headline": "Cézanne’s The Card Players at The Met: figures, hands and balance",
+        "description": "A closer look at Cézanne’s The Card Players (1890–92): four figures, a table and a network of hands. Explore the composition, then choose between paintings.",
+        "context": "The Met explains that Cézanne developed this composition from studies of local farmworkers and revised the figures’ poses and placement. It belongs to a series with other versions.",
+        "sections": [
+          [
+            "Count the figures before following the game",
+            "Three figures sit around the table while another stands behind. Compare the line of hats with the level of the tabletop. The standing figure adds height without occupying a place at the table. Where does that leave your sense of the center?"
+          ],
+          [
+            "Let the hands lead",
+            "Faces look downward, but the hands gather near the playing surface. Follow an arm from shoulder to cards, then back to another face. Notice how the table gives several gestures a common meeting place rather than treating each person as an isolated portrait."
+          ],
+          [
+            "Look for balance without symmetry",
+            "The people on either side do not mirror one another. Compare the broad blue sleeve at the right with the darker seated figure at the left. Ask whether the unequal shapes feel balanced to you. There is no need to turn that response into a rule for all paintings."
+          ]
+        ],
+        "question": "Is this the only version of The Card Players?",
+        "answer": "No. The Met describes a series with other versions. This page is specifically about its 1890–92 painting, identified by collection record 435868."
+      },
+      "zh": {
+        "headline": "塞尚《玩纸牌的人》：大都会版本的构图怎么看",
+        "description": "看懂大都会收藏的塞尚《玩纸牌的人》：观察四个人物、牌桌、手势与不对称的平衡，再进入两幅画的偏好比较。",
+        "context": "据大都会博物馆介绍，塞尚以当地农工的人物习作为基础调整姿态与位置；这是《玩纸牌的人》系列中的一个版本。",
+        "sections": [
+          [
+            "先数人物，再追随牌局",
+            "三个人坐在桌边，另一个人站在后方。比较帽子的高低与桌面的水平线：站立者没有占据桌边的位置，却增加了画面的高度。你觉得画面的重心落在哪里？"
+          ],
+          [
+            "让手势带着目光走",
+            "几张脸朝下看，手则聚向牌桌。沿着肩膀、手臂和纸牌看过去，再回到另一张脸。桌子让这些动作有了共同的交会处，而不只是把几幅人物肖像并排摆在一起。"
+          ],
+          [
+            "不对称也能带来平衡感吗",
+            "左右人物并非镜像。看右侧宽阔的蓝色衣袖，再比较左侧较暗的人物：形状不相等时，你仍会觉得两边平衡吗？这是对眼前这幅画的感受，不必立即变成普遍的审美规则。"
+          ]
+        ],
+        "question": "《玩纸牌的人》只有这一幅吗？",
+        "answer": "不是。馆方介绍提到它属于一个包含其他版本的系列；本页对应馆藏编号435868、创作于1890至1892年的大都会版本。"
+      },
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/435868",
+      "sourceChecked": "2026-11-01",
+      "observationBasis": "Direct viewing of web/met-art/435868.jpg; looking prompts are site editorial, not museum statements."
+    },
+    "436526": {
+      "zhTitle": "最初的步伐（仿米勒）",
+      "zhArtist": "文森特·梵高",
+      "zhDate": "1890年",
+      "zhMedium": "布面油画",
+      "en": {
+        "headline": "Van Gogh’s First Steps, after Millet: how gesture connects a scene",
+        "description": "Explore First Steps, after Millet (1890) by Van Gogh. Follow the reaching hands, the garden and the spaces between the figures before comparing paintings.",
+        "context": "According to The Met, Van Gogh made this painting in January 1890 using a photograph of Millet’s composition as his starting point, adding his own color interpretation.",
+        "sections": [
+          [
+            "Begin with the reaching hands",
+            "At the left, a crouching adult extends both arms toward the child at the right. Follow that gesture across the open ground. The space between the figures is part of the scene: it gives your eye a distance to travel."
+          ],
+          [
+            "Find the figures in the garden",
+            "Blue clothing appears against a largely green and yellow setting. Look at the adult and child on the right, then the figure on the left. Which contrast makes a person easiest to find? Compare that with the quieter shapes behind them."
+          ],
+          [
+            "Move between story and surface",
+            "You can read the picture as a small human event, or pause over its short marks and patches of color. Try both approaches. If another painting attracts you more, ask whether you preferred its subject, its arrangement, or simply the way it held your attention."
+          ]
+        ],
+        "question": "Why does the title say “after Millet”?",
+        "answer": "It identifies the relationship to Millet’s composition. The Met explains that Van Gogh worked from a photograph and interpreted the source in color."
+      },
+      "zh": {
+        "headline": "梵高《最初的步伐》：怎样从人物动作看一幅画",
+        "description": "欣赏梵高1890年的《最初的步伐（仿米勒）》：观察伸出的双手、人物间距与花园色彩，再试试与AI比较艺术偏好。",
+        "context": "据大都会博物馆介绍，梵高于1890年1月以米勒作品的照片为起点，作出了自己的色彩诠释。",
+        "sections": [
+          [
+            "从伸出的双手开始",
+            "左侧蹲下的成人张开双臂，朝向右侧的孩子。沿着这个动作，看向两边人物之间的地面。中间的空隙并非无事可看，它给视线留下了一段需要跨越的距离。"
+          ],
+          [
+            "看人物怎样从花园里显现",
+            "蓝色衣服与大片绿、黄色环境形成区别。先看右侧成人和孩子，再找左侧人物：哪一处对比让你最快注意到人？随后把目光移回树木、围栏与背景，看看人物是否仍然突出。"
+          ],
+          [
+            "在故事与笔触之间切换",
+            "你可以关注一个孩子向前迈步的场景，也可以只看短笔触和色块。分别试一次，再问自己：吸引你的是题材、人物之间的安排，还是画面的观看节奏？无需选出一种唯一正确的看法。"
+          ]
+        ],
+        "question": "“仿米勒”是什么意思？",
+        "answer": "英文标题中的“after Millet”说明它与米勒构图的关系；馆方介绍指出，梵高依据照片作画，并加入自己的色彩诠释。"
+      },
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/436526",
+      "sourceChecked": "2026-11-01",
+      "observationBasis": "Direct viewing of web/met-art/436526.jpg; looking prompts are site editorial, not museum statements."
+    },
+    "436528": {
+      "zhTitle": "鸢尾花",
+      "zhArtist": "文森特·梵高",
+      "zhDate": "1890年",
+      "zhMedium": "布面油画",
+      "en": {
+        "headline": "Van Gogh’s Irises (1890): looking at color and line",
+        "description": "Look closely at Van Gogh’s Irises at The Met: the blue flowers, green leaves and quiet background. Then compare your preference with another painting.",
+        "context": "The Met dates this bouquet to May 1890 at Saint-Rémy. Its curatorial account explains that fading pigments changed the flowers and background from their earlier colors.",
+        "sections": [
+          [
+            "A bouquet, rather than a garden",
+            "This image shows flowers gathered in a pale vase on a green surface. Start with the whole silhouette. The leaves reach outward while many flower heads collect near the center. Does your attention stay with the cluster, or follow the stems toward the edges?"
+          ],
+          [
+            "Compare two kinds of line",
+            "Trace one long leaf, then the edge of a folded petal. The leaf gives you a sweeping direction; the petal breaks into shorter turns. Try looking at those shapes before naming the flower. Which movement makes you want to keep looking?"
+          ],
+          [
+            "Give the background a turn",
+            "The pale field around the bouquet has visible brush marks of its own. Compare its open space with the packed leaves and blossoms. You can prefer that contrast without deciding that every dense or colorful painting will suit you."
+          ]
+        ],
+        "question": "What should I notice in Van Gogh’s Irises?",
+        "answer": "Begin with the spreading leaves, the clustered flower heads and the pale space around them. These are looking exercises, not a test of the artist’s intention."
+      },
+      "zh": {
+        "headline": "梵高《鸢尾花》（1890）：怎么看花瓶中的色彩与线条",
+        "description": "欣赏大都会博物馆收藏的梵高《鸢尾花》：从蓝色花朵、绿色长叶和浅色背景看构图，再进入两幅画的艺术选画体验。",
+        "context": "据大都会博物馆介绍，此画作于1890年5月的圣雷米；颜料褪色改变了花朵与背景原来的颜色。",
+        "sections": [
+          [
+            "先认清是哪一幅《鸢尾花》",
+            "这里展示的是花瓶中的一束鸢尾花。先看整束花的轮廓：细长叶片向两侧伸出，许多花头则聚在中央。你的目光会停在花朵的密集处，还是顺着叶片走向画面边缘？"
+          ],
+          [
+            "比较叶片与花瓣的线条",
+            "沿着一片长叶看过去，再看一朵花瓣弯折的边缘。前者给出较长的方向，后者不断转弯。暂时不去辨认花的名称，只比较这两种线条带来的观看节奏。"
+          ],
+          [
+            "别忽略花束周围的空处",
+            "浅色背景也留有可见的笔触。试着比较背景的开阔与花叶的密集：你喜欢的是花朵本身，还是它与空处形成的反差？一次偏好不必概括你对所有静物画的看法。"
+          ]
+        ],
+        "question": "梵高《鸢尾花》应该先看什么？",
+        "answer": "可以从长叶的方向、花头的聚集和花束周围的浅色空间开始。这是本站的观看练习，不是对画家意图的唯一解释。"
+      },
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/436528",
+      "sourceChecked": "2026-11-01",
+      "observationBasis": "Direct viewing of web/met-art/436528.jpg; looking prompts are site editorial, not museum statements."
+    },
+    "437301": {
+      "zhTitle": "蓬图瓦兹的公共花园",
+      "zhArtist": "卡米耶·毕沙罗",
+      "zhDate": "1874年",
+      "zhMedium": "布面油画",
+      "en": {
+        "headline": "Pissarro’s The Public Garden at Pontoise: paths through a crowded view",
+        "description": "Look at Pissarro’s 1874 public garden in Pontoise: the foreground tree, strolling figures and layered terraces. Then compare it with another painting.",
+        "context": "The Met identifies the scene as Pontoise’s public garden. Its account emphasizes the terraces and visitors rather than the distant view across the plain.",
+        "sections": [
+          [
+            "Use the tree as a starting point",
+            "A tall trunk rises near the middle of the foreground. Look to either side of it: the tree divides your view without hiding everything behind it. Trace the trunk upward, then follow the branches back across the sky."
+          ],
+          [
+            "Move from people to terraces",
+            "Small figures are scattered across the open ground. Behind them, greenery and a wall form a higher level. Compare the size of the nearest people with the figures farther away. Which changes help your eye move into the distance?"
+          ],
+          [
+            "Look for a route rather than a single subject",
+            "The scene offers several places to pause: the pale open ground, darker foliage, clusters of people and a glimpse of distance at the left. Choose a route between two of them. Does the painting reward wandering, or do you want a more definite focal point?"
+          ]
+        ],
+        "question": "What makes this a useful painting-comparison starting point?",
+        "answer": "Its people, greenery and layers of space give you several things to compare. You might prefer a scene for its open ground or shifting attention, rather than for one central figure."
+      },
+      "zh": {
+        "headline": "毕沙罗《蓬图瓦兹的公共花园》：怎样看风景画的层次",
+        "description": "欣赏毕沙罗1874年的《蓬图瓦兹的公共花园》：从前景树干、散步人物与层叠平台看空间，再试试艺术选画。",
+        "context": "据大都会博物馆介绍，画面取自蓬图瓦兹的公共花园，着重呈现平台与游人，而不是远处平原的景色。",
+        "sections": [
+          [
+            "把树干当作起点",
+            "一根高树干从前景接近中央的位置向上伸出。分别看看它的两侧：树干分开了视野，却没有把后方景物完全挡住。先沿树干向上，再顺枝叶回到天空与远景。"
+          ],
+          [
+            "从人物走向不同高度的平台",
+            "小人物散布在开阔地面上，后方的墙与绿植形成较高的一层。比较近处的人和远处的人有多大，再找出哪些遮挡关系让你感觉视线正在向里移动。"
+          ],
+          [
+            "允许目光在画中散步",
+            "浅色地面、较暗树叶、几组人物与左侧远景，都可以成为停留处。自己选一条连接其中两处的观看路线。你喜欢这种能来回游走的画面，还是更偏爱焦点明确的作品？"
+          ]
+        ],
+        "question": "这幅风景画适合怎样比较？",
+        "answer": "可以比较空间的开阔感、人物的位置与视线能否游走。一幅画吸引你的原因未必是某个中心人物，也可能是层次之间的关系。"
+      },
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/437301",
+      "sourceChecked": "2026-11-01",
+      "observationBasis": "Direct viewing of web/met-art/437301.jpg; looking prompts are site editorial, not museum statements."
+    },
+    "437881": {
+      "zhTitle": "提水壶的年轻女子",
+      "zhArtist": "约翰内斯·维米尔",
+      "zhDate": "约1662年",
+      "zhMedium": "布面油画",
+      "en": {
+        "headline": "Vermeer’s Young Woman with a Water Pitcher: following the window light",
+        "description": "Explore Vermeer’s Young Woman with a Water Pitcher, ca. 1662. Notice the window, white linen and patterned foreground before an art preference comparison.",
+        "context": "The Met dates the painting to about 1662 and describes a domestic scene involving a pitcher, basin and protective linen coverings. It was the first Vermeer painting to enter an American collection.",
+        "sections": [
+          [
+            "Start at the window",
+            "The window occupies the left edge rather than the middle. Follow its vertical frame toward the woman’s extended arm, then look at the light on her white covering. Which path do you take through the room when you begin at its edge?"
+          ],
+          [
+            "Compare quiet and busy areas",
+            "The broad wall behind the figure is relatively quiet. In front, the red patterned textile contains many smaller shapes. Move your attention between these areas. Does the detailed foreground hold you, or send you back toward the face and white linen?"
+          ],
+          [
+            "Notice what light separates",
+            "Look at the pale cloth beside the darker blue clothing, then at the pitcher against its surroundings. You do not have to identify every object to follow those contrasts. Ask which small change of brightness makes the scene easier to read for you."
+          ]
+        ],
+        "question": "How can I look at the light in this Vermeer?",
+        "answer": "Try following a path from the left-hand window to the white linen and then to the pitcher. Compare those light areas with the darker clothing and patterned foreground."
+      },
+      "zh": {
+        "headline": "维米尔《提水壶的年轻女子》：跟随窗边的光看画",
+        "description": "欣赏维米尔约1662年的《提水壶的年轻女子》：从窗框、白色头巾与前景织物观察光线，再比较自己的艺术偏好。",
+        "context": "据大都会博物馆介绍，这幅约1662年的画描绘了带水壶、盆与防护亚麻布的室内场景，也是首幅进入美国收藏的维米尔作品。",
+        "sections": [
+          [
+            "从左边的窗户进入",
+            "窗户在画面左缘，而不在中央。顺着窗框看向女子伸出的手臂，再注意她头上白色织物的亮处。如果从边缘而非人物面部开始，你的视线会怎样经过这个房间？"
+          ],
+          [
+            "比较安静和繁密的地方",
+            "人物身后的墙面相对平整，前方红色织物却有许多小形状。把目光在两者之间移动：你会留在前景的细节里，还是被送回人物的脸与白色头巾？"
+          ],
+          [
+            "看明暗怎样分开物体",
+            "先比较白布与较暗的蓝衣，再看水壶和周围环境。即使还没认出每件物品，你也能沿着这些明暗区别观看。哪一处亮度变化最能帮助你读懂场景？"
+          ]
+        ],
+        "question": "欣赏维米尔的光线，可以从哪里开始？",
+        "answer": "试着沿左侧窗户、白色织物、水壶依次观看，再与深色衣服和图案繁密的前景比较。这是一条可尝试的观看路线。"
+      },
+      "sourceUrl": "https://www.metmuseum.org/art/collection/search/437881",
+      "sourceChecked": "2026-11-01",
+      "observationBasis": "Direct viewing of web/met-art/437881.jpg; looking prompts are site editorial, not museum statements."
+    }
+  }
+}

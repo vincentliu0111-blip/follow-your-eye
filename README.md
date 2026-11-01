@@ -34,10 +34,18 @@ An artwork link preserves an unfinished round and starts the requested work in t
 
 `/connection.html` performs read-only configuration and public-count connectivity checks, without sending a choice or registering a test session. A successful check does not prove POST writes or mainland-China reachability. The current collector remains unchanged. Mainland upload availability requires tests from actual local networks; merely changing to a custom domain is not a verified fix.
 
+## Focused search guides
+
+Five existing English artwork pages now have museum-sourced context and work-specific looking exercises: Met IDs 436528, 436526, 435868, 437881 and 437301. Their Chinese editions live at `/zh/artworks/met-<ID>/`; Chinese titles are site translations rather than claimed official museum labels. The source URLs, verification date and bilingual editorial live in `Data/artwork_editorial_v1.json`. Museum background is distinguished from site observations. Codex assisted in drafting and checking this editorial against the museum records and the existing artwork images.
+
+The English `/art-choices/` and Chinese `/zh/art-choices/` pages explain how to compare paintings and interpret the saved AI preferences. They link to the five works and the existing experience. `Data/art_choice_guides_v1.json` is their content source. All seven new URLs have independent canonicals and reciprocal language annotations; the sitemap now contains 51 URLs. Generation and verification use the existing `tools/build_artwork_pages.mjs` command. Search inclusion and ranking are not guaranteed.
+
+Guide links pass a supported `lang=en` or `lang=zh` value to set the interactive UI language. Only the language setting is updated; existing choice/history/outbox storage is preserved. Focused artwork return links follow the interface language. General guide source attribution still applies primarily to new browser sessions; an existing session is not silently relabeled. Re-entering the current work can replace a different queued next-work request without discarding round progress.
+
 ## Local checks
 
 ```sh
-node --test tests/experience-core.test.mjs tests/experience-storage.test.mjs tests/experience-connectivity.test.mjs tests/met-experience.test.mjs tests/artwork-pages.test.mjs
+node --test tests/experience-core.test.mjs tests/experience-storage.test.mjs tests/experience-connectivity.test.mjs tests/met-experience.test.mjs tests/artwork-pages.test.mjs tests/search-content.test.mjs
 python3 -m unittest discover -s tests -p 'test_agreement_stats.py'
 ```
 

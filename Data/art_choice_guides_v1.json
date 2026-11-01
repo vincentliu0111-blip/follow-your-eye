@@ -1,0 +1,40 @@
+{
+  "en": {
+    "title": "Art preference comparison: choose paintings and compare with AI",
+    "description": "How do you choose between two paintings? Try a 10-choice art preference experience, learn what to look for, and explore how your choices compare with AI.",
+    "heading": "Which painting catches your eye?",
+    "intro": "Art preference starts with a choice you can make without knowing an artist’s name. In Follow Your Eye, look at two paintings, choose the one you prefer, and see where your choices overlap with precomputed AI judgments after a round.",
+    "cta": "Start choosing paintings →",
+    "start": "Try 10 choices. You can skip a pair, take a closer look, or stop when you want.",
+    "sections": [
+      ["How to compare two paintings", "First, look at each whole image before concentrating on a detail. Notice where your attention lands, then ask what makes you want to return. You might respond to a subject, a color relationship, a patch of light or an arrangement of shapes. You do not need to justify a preference before making it.", "If you feel stuck, compare one thing at a time: open space versus dense detail, a strong focal point versus a wandering view, or long lines versus broken marks. These are ways to look, not rules for declaring a winner."],
+      ["A preference is not an art-history quiz", "Knowing a work’s context can change what you notice, but this experience does not grade that knowledge. A famous painting is not automatically the choice you have to make. Skipping is useful when neither work holds your attention or you do not want to choose.", "If you start from a work’s guide page, you have already spent time with that painting. Keep that familiarity in mind when thinking about your response to the first comparison."],
+      ["What does comparing your taste with AI mean?", "After a round, the site compares your choices with previously computed AI-judge preferences and a separate image-feature model. Agreement means the same painting was selected in those particular comparisons. The AI is not a referee deciding whether your taste is correct.", "A short round cannot establish a complete taste profile. Different paintings, familiarity, screen size and the moment you are looking may all matter. The results describe this round; they are not a psychological diagnosis or an objective beauty score."],
+      ["What happens if a choice cannot save online?", "You can keep choosing and see the locally calculated round result. Waiting choices can upload when the connection returns while the site is open. Browser storage can fail or be cleared, so unsynced progress is not guaranteed to survive; the page warns when progress is only in the current tab.", "Public vote counts include accepted online saves, not every local choice. The connection-check page tests read access without submitting a choice."]
+    ],
+    "faqs": [
+      ["Do I need to know art to participate?", "No. Choose what attracts you, take time to look, or skip. The experience compares preferences rather than testing art knowledge."],
+      ["Does the AI judge my taste while I play?", "No. The painting preferences used for comparison were computed earlier. Your result shows overlap with those saved preferences, not a live judgment of you."],
+      ["Can I start with a particular painting?", "Yes. The focused artwork guides link to an existing comparison containing that work. If you have already made a choice in a current round, it stays intact and the requested work starts the next round."]
+    ]
+  },
+  "zh": {
+    "title": "艺术选画：比较两幅画，看看你与AI的审美偏好",
+    "description": "不知道怎么欣赏一幅画？从两幅画的比较开始，完成10次艺术选画，看看你与AI裁判有哪些相同偏好。无需艺术知识，也没有审美标准答案。",
+    "heading": "两幅画，你更喜欢哪一幅？",
+    "intro": "艺术选画可以从一个简单问题开始：眼前两幅画，哪幅让你愿意多看一会儿？在Follow Your Eye里，不用先背画家名字或流派知识。你可以凭直觉选择，再回到细节，看看这一次是什么吸引了你。",
+    "cta": "开始艺术选画 →",
+    "start": "试试10次选择。可以跳过、放大查看，也可以随时停下来。",
+    "sections": [
+      ["怎么比较两幅画？先看整体，再找一个细节", "先分别看完整幅画，不急着评判。注意目光最先落在哪里，再问自己是否愿意回去多看一次。吸引你的可能是人物、题材、色彩关系、一处光，或几种形状的安排。做出偏好选择前，不必先写出一套理由。", "如果难以决定，试着一次只比一件事：开阔空间与密集细节、明确焦点与可以游走的视线、舒展长线与短促笔触。它们是观察方式，不是判断哪幅画更高级的公式。"],
+      ["不懂艺术也能选画：偏好不是知识考试", "了解背景可能改变你注意到的内容，但这里不考艺术史，也不要求你选名气更大的作品。两幅都没有打动你，或者暂时不愿判断时，可以跳过。", "从作品介绍页进入时，你已经提前看过其中一幅画。回顾结果时可以记住这份熟悉感，别把第一次比较当成完全没有背景影响的判断。"],
+      ["与AI比较审美偏好，结果说明什么？", "完成一轮后，网站会把你的选择与预先计算的AI裁判偏好、另一套图像特征模型作比较。一致只表示在这些具体画对里选了同一幅，不表示AI正在裁定你的审美是否正确。", "短短一轮不能定义一个人的全部品位。看到哪些作品、是否熟悉它们、屏幕大小与观看时的状态都可能影响体验。结果是本轮记录，不是心理诊断，也不是客观的美学成绩。"],
+      ["网络不好，选画还能继续吗？", "可以继续选画并查看本地计算的本轮结果。网站保持打开、连接恢复后，会再次尝试上传待同步选择。浏览器存储也可能失败或被清除，因此不能保证所有尚未上传的进度都会保留；仅暂存在当前页面时会有提示。", "公开票数只计算已被在线接收的选择。连接检查页只检查读取是否可达，不会提交一条测试作答。"]
+    ],
+    "faqs": [
+      ["艺术选画需要先学画家或流派知识吗？", "不需要。可以直接选更吸引你的画、放大看细节，或者跳过。这项体验比较偏好，不考知识。"],
+      ["AI会在我选画时实时给审美打分吗？", "不会。用于比较的画作偏好已经预先计算。结果展示与这些偏好的重合，不是AI对你的实时评价。"],
+      ["可以从梵高或其他指定作品开始吗？", "可以。重点作品介绍页会打开包含该作品的既有画对。若当前一轮已经作答，进度会保留，指定作品安排到下一轮。"]
+    ]
+  }
+}
