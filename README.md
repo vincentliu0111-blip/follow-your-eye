@@ -6,7 +6,7 @@
 
 ## Research notice
 
-Before the painting-choice controls, the English/Chinese notice explains research use, recorded responses and optional settings, browser IDs, voluntary participation, and the option to browse the gallery without submitting choices. Language-specific links and a persistent footer link lead to the detailed About-page sections. This notice does not change collection, queues, existing records, or the collector API. The legacy `consent: true` field is not evidence that someone read or affirmatively accepted the notice, and the new text does not establish consent for earlier records or IRB approval/exemption. Codex assisted with this notice and its website integration.
+Before the painting-choice controls, the English/Chinese notice states that choices and skips are collected for research comparing human painting preferences with AI judgments. Language-specific links and a persistent footer link lead to the same short notice on the About page; a gallery link remains available. This notice does not change collection, queues, existing records, or the collector API. The legacy `consent: true` field is not evidence that someone read or affirmatively accepted the notice, and the text does not establish consent for earlier records or IRB approval/exemption. Codex assisted with this notice and its website integration.
 
 ## Current public dataset
 

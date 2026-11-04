@@ -76,10 +76,8 @@ Object.assign(COPY.en, {
   historyFull:'This browser has reached its choice-history limit. Existing choices are safe.',
   communityNote:'Collected votes from online saves; your unsynced choices are not included.',
   researchTitle:'Before you choose',
-  researchPurpose:'Your choices and skips are collected for Vincent Liu’s research comparing human art preferences with AI judgments. They are saved in this browser and uploaded in the background.',
-  researchData:'Records include the paintings shown, their positions, timing, browser and round IDs, entry source, and any optional preferences you provide.',
-  researchVoluntary:'Taking part is voluntary. Choosing or skipping submits a research response. You can stop at any time, or browse the gallery without submitting choices. Stopping does not delete responses already uploaded.',
-  researchDetails:'Research & data details',
+  researchPurpose:'Your choices and skips are collected for Vincent Liu’s research comparing human painting preferences with AI judgments.',
+  researchDetails:'Research notice',
   researchBrowse:'Just browse the gallery',
 });
 Object.assign(COPY.zh, {
@@ -97,10 +95,8 @@ Object.assign(COPY.zh, {
   historyFull:'此浏览器的作答记录已达上限，已有选择仍保留。',
   communityNote:'投票统计仅包含已在线保存的选择，尚未同步的选择不计入。',
   researchTitle:'选画前，请先了解',
-  researchPurpose:'你的选择与跳过记录将用于 Vincent Liu 比较人类艺术偏好与 AI 判断的研究。记录会保留在此浏览器，并在后台尝试上传。',
-  researchData:'记录包括展示的画作及位置、作答时间、浏览器与轮次编号、进入来源，以及你自愿填写的偏好。',
-  researchVoluntary:'参与完全自愿；选择或跳过画作会提交研究作答。你可以随时停止，或只浏览画廊、不提交选择。停止参与不会删除已经上传的记录。',
-  researchDetails:'研究与数据说明',
+  researchPurpose:'你的选择与跳过记录会被收集，用于 Vincent Liu 比较人类绘画偏好与 AI 判断的研究。',
+  researchDetails:'研究告知',
   researchBrowse:'只浏览画廊',
 });
 const t = (key, ...args) => typeof COPY[locale][key] === 'function' ? COPY[locale][key](...args) : COPY[locale][key] ?? COPY.en[key] ?? key;
