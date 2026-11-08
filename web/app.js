@@ -6,7 +6,10 @@ import {ARTWORK_PAGES, ZH_ARTWORK_PAGES} from './artwork-pages.mjs?v=20261101-se
 
 const $ = id => document.getElementById(id);
 // A new schema never backfills untimed choices from earlier prototypes.
-const STORAGE_BASE_KEY = 'follow-your-eye-experience-v1';
+// Public play never constructs a study client or reuses a research round.
+// The separate, explicit research route retains its consent/service gate.
+const demoMode = new URLSearchParams(location.search).get('mode') !== 'research';
+const STORAGE_BASE_KEY = demoMode ? 'follow-your-eye-demo-v1' : 'follow-your-eye-experience-v1';
 let storageKey = STORAGE_BASE_KEY;
 const LOCALE_KEY = 'follow-your-eye-language';
 let locale = 'en';
@@ -121,15 +124,34 @@ Object.assign(COPY.zh, {
   studyClosed:'正式研究尚未开放。你可以自由浏览画廊，完成所需准备后才会开放参加研究。',consentConnectionError:'暂时无法连接研究服务，请重试或先浏览画廊。',consentStorageError:'浏览器存储不可用，你仍可浏览画廊。',withdrawPending:'你在此处的参与已停止。请保留此浏览器数据，并在联网后返回，以完成退出或删除请求的同步。',
   settingsIntro:'这些偏好只保存在此浏览器，不作为研究数据上传。',languageNote:'这项可选偏好只留在浏览器中；研究告知所用语言会单独记录。',communityNote:'这些票数仅包含符合正式研究纳入规则的回答。',
 });
+if (demoMode) {
+  Object.assign(COPY.en, {
+    researchTitle:'Explore at your own pace',
+    researchPurpose:'Choose, skip, and compare with AI. Your answers stay in this browser and are not uploaded or used as research data.',
+    researchDetails:'About the experience & research',
+    picked:'Choice saved in this browser.',skippedAnnounce:'Pair skipped.',
+    languageNote:'This optional preference stays in this browser.',
+    communityNote:'These totals contain only eligible formal-study answers. Your public-experience choices are not included.',
+  });
+  Object.assign(COPY.zh, {
+    researchTitle:'跟着直觉，自由选画',
+    researchPurpose:'选画、跳过，再看看与 AI 的异同。答案只留在此浏览器，不上传，也不作为研究数据。',
+    researchDetails:'体验与研究说明',
+    picked:'选择已保存在此浏览器。',skippedAnnounce:'已跳过这一组。',
+    languageNote:'这项可选偏好只留在浏览器中。',
+    communityNote:'这些票数仅包含符合正式研究规则的回答，不包含本次公开体验中的选择。',
+  });
+}
 const t = (key, ...args) => typeof COPY[locale][key] === 'function' ? COPY[locale][key](...args) : COPY[locale][key] ?? COPY.en[key] ?? key;
 let data, pairsById, playablePairs, preferredOpening, westernPairIds, state;
 let view = 'play', busy = false, displayKey = '', renderToken = 0;
 let collector = false, connectionProblem = false, checkingCollector = false;
 let syncing = false, hasSynced = false, rejected = false, syncController;
 let collectorEndpoint = '';
-const study = new StudyClient();
+const study = demoMode ? null : new StudyClient();
+const canPlay = () => demoMode || study.active;
 let consentBusy=false;
-study.addEventListener('change',()=>{if(data&&state){updateSync();updateStudyGate();if(study.active&&view==='play')renderPlay();}});
+study?.addEventListener('change',()=>{if(data&&state){updateSync();updateStudyGate();if(study.active&&view==='play')renderPlay();}});
 let storageMessage = '', memoryOnly = false, communityRequest = 0, selectedComparison = null;
 let zoomScale = 1, zoomX = 0, zoomY = 0, dragPoint = null, zoomDragged = false;
 
@@ -273,9 +295,9 @@ async function load() {
 function setViews(next) {
   view = next;
   const completed = state.index >= state.deck.length;
-  $('consentView').hidden = study.active || next !== 'play';
-  $('playView').hidden = next !== 'play' || completed || !study.active;
-  $('summaryView').hidden = next !== 'play' || !completed || !study.active;
+  $('consentView').hidden = canPlay() || next !== 'play';
+  $('playView').hidden = next !== 'play' || completed || !canPlay();
+  $('summaryView').hidden = next !== 'play' || !completed || !canPlay();
   renderEntry();
   $('collectionView').hidden = next !== 'collection';
   $('playNav').classList.toggle('active', next === 'play');
@@ -286,7 +308,7 @@ function setViews(next) {
 function renderPlay() {
   if (!state) return;
   setViews('play');
-  if(!study.active)return;
+  if(!canPlay())return;
   if (state.index >= state.deck.length) { renderSummary(); return; }
   const item = state.deck[state.index];
   $('roundLabel').textContent = t('round', state.roundNumber);
@@ -332,12 +354,12 @@ function setImage(img, art) {
   });
 }
 async function choose(side) {
-  if (!state || !study.active || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
+  if (!state || !canPlay() || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
   if (side !== 'skip' && $(side === 'left' ? 'chooseLeft' : 'chooseRight').disabled) return;
   busy = true;
   const expectedRound = state.roundId, expectedIndex = state.index;
   const accepted = await mutateState(current => {
-    if (!study.active || current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
+    if (!canPlay() || current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
     if(current.history.length>=10000){storageMessage='historyFull';updateStorageWarning();return false;}
     const item = current.deck[current.index], pair = pairsById.get(item.pairId);
     const chosenId = side === 'left' ? item.leftId : item.rightId;
@@ -352,7 +374,7 @@ async function choose(side) {
   });
   if (!accepted) {busy=false;displayKey='';renderPlay();return;}
   const record=state.history.at(-1);
-  await study.enqueue(record);
+  if (study) await study.enqueue(record);
   updateCollectionCount(); updateSync();
   $('chooseLeft').disabled=$('chooseRight').disabled=$('skipPair').disabled=true;
   if (side !== 'skip') {
@@ -528,6 +550,11 @@ function renderEntry() {
 }
 function updateStudyGate(){
   if(!state)return;
+  if(demoMode){
+    $('consentView').hidden=true;
+    $('withdrawStudy').hidden=$('summaryWithdraw').hidden=true;
+    return;
+  }
   $('consentAccept').disabled=consentBusy || !study.config || (!study.config.open&&!study.config.preview);
   $('consentStatus').textContent=t(study.error==='storage'?'consentStorageError':study.error==='pending-exit'?'withdrawPending':study.error?'consentConnectionError':study.config?.preview?'previewStudy':!study.config?.open?'studyClosed':'');
   $('consentStatus').hidden=!$('consentStatus').textContent;
@@ -537,7 +564,7 @@ function updateStudyGate(){
   if(shouldGate){$('playView').hidden=$('summaryView').hidden=true;}
 }
 async function beginStudy(){
-  if(consentBusy||!state)return;consentBusy=true;updateStudyGate();
+  if(demoMode||consentBusy||!state)return;consentBusy=true;updateStudyGate();
   const enrolled=await study.enroll(locale);
   if(enrolled){
     await mutateState(current=>{
@@ -553,12 +580,13 @@ async function beginStudy(){
 }
 async function withdrawStudy(){
   // Local revocation happens before navigation and before any network acknowledgment.
+  if(demoMode){location.href=`gallery.html?lang=${locale}`;return;}
   const ending=study.end();updateStudyGate();
   await Promise.race([ending,new Promise(resolve=>setTimeout(resolve,200))]);
   location.href=`gallery.html?study=withdrawn&lang=${locale}`;
 }
 async function checkCollector(){
-  if(checkingCollector||!state)return;checkingCollector=true;
+  if(demoMode||checkingCollector||!state)return;checkingCollector=true;
   try{
     const response=await fetchWithTimeout('./collection_config.json',{cache:'no-cache'},10000);
     if(!response.ok)throw Error('configuration');const c=await response.json();
@@ -572,6 +600,10 @@ async function checkCollector(){
 }
 function updateSync(){
   if(!state)return;
+  if(demoMode){
+    $('contributionBar').hidden=$('connectionNotice').hidden=true;
+    return;
+  }
   const pending=study.pending;
   $('contributionBar').hidden=!study.active&&!pending;
   $('syncStatus').textContent=pending?t('pending',pending):t('studyActive');
@@ -583,7 +615,7 @@ function updateSync(){
   $('retrySave').hidden=!pending||study.sending;
   $('retrySave').disabled=study.sending;
 }
-async function syncChoices(){await study.flush();}
+async function syncChoices(){if(study)await study.flush();}
 
 $('consentAccept').addEventListener('click',beginStudy);
 for(const id of ['consentBrowse','consentClose'])$(id).addEventListener('click',event=>{event.preventDefault();void withdrawStudy();});
@@ -632,6 +664,6 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('storage',event=>{if(event.key!==storageKey||!data||memoryOnly)return;try{const raw=localStorage.getItem(storageKey);if(!raw)return;const latest=JSON.parse(raw);if(!isValidState(latest,data))return;latest.consent=false;latest.queue=[];const changed=latest.roundId!==state.roundId||latest.index!==state.index;state=latest;updateSync();updateCollectionCount();if(changed){displayKey='';if(view==='play')renderPlay();else renderCollection();}}catch{}});
 window.addEventListener('online',checkCollector);
 window.addEventListener('focus',()=>{if(state)checkCollector();});
-window.addEventListener('pageshow',event=>{if(event.persisted&&state){study.ready=false;updateStudyGate();void checkCollector();}});
-setInterval(()=>{if(study.pending||study.error)checkCollector();},15000);
+window.addEventListener('pageshow',event=>{if(event.persisted&&state&&study){study.ready=false;updateStudyGate();void checkCollector();}});
+setInterval(()=>{if(study&&(study.pending||study.error))checkCollector();},15000);
 translate();load();

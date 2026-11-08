@@ -1,6 +1,6 @@
 # Follow Your Eye
 
-**For judges:** Follow Your Eye is an art discovery web app by **Vincent Liu**. At [vincentliu.ai](https://vincentliu.ai/), anyone curious about art can choose between two paintings in a ten-pair round, then see how their preferences compare with precomputed AI judges. In this version, adults must explicitly agree before choosing; anyone can browse the gallery. After enrollment, choose either painting or skip each pair, then continue to the round result. Formal research participation stays closed until its start is configured. The [AI use and authorship note](#ai-use-and-authorship) below explains the AI judges, model predictions and image sources. The [development log](devlog.md) records the work over time.
+**For judges:** Follow Your Eye is an art discovery web app by **Vincent Liu**. At [vincentliu.ai](https://vincentliu.ai/), anyone curious about art can choose between two paintings in a ten-pair round, then see how their preferences compare with precomputed AI judges. The public experience lets anyone choose either painting or skip each pair, then see the round result. Answers and collections stay in the browser and are not uploaded or used as research data. Formal research participation is a separate, explicit `?mode=research` route with adult consent; it stays closed until its start is configured. The [AI use and authorship note](#ai-use-and-authorship) below explains the AI judges, model predictions and image sources. The [development log](devlog.md) records the work over time.
 
 **Find the code quickly:** `web/index.html`, `web/app.js`, `web/experience-core.mjs` and `web/style.css` implement the web experience; `tests/` contains checks. The public dataset and metadata are in `web/*.json` and `Data/`. The 5,326 optimized museum images are in `web/met-art/`; historical images are in `web/art/`. These images account for most repository files and download size, so start with the source files above if you are reviewing the implementation.
 
@@ -59,7 +59,7 @@ node --test tests/experience-core.test.mjs tests/experience-storage.test.mjs tes
 python3 -m unittest discover -s tests -p 'test_agreement_stats.py'
 ```
 
-Serve `web/` together with the matching local study service for an interactive preview; a static-only server leaves formal participation closed. Only explicit study participants have a research outbox. Connection failures preserve event IDs and actual choice times. New participation requires working browser storage. The study service and one-year purge must be tested separately from frontend checks; no local preview is a production deployment.
+Serve `web/` for the public experience: choosing, skipping, results, collections and refresh recovery work without the study service. Its storage uses a separate `follow-your-eye-demo-v1` namespace; public play never constructs the study client, enrolls or uploads answers. For the separate `?mode=research` route, use the matching local study service for a research preview; a static-only server leaves formal participation closed. Only explicit study participants have a research outbox. Connection failures preserve event IDs and actual choice times. New participation requires working browser storage. The study service and one-year purge must be tested separately from frontend checks; no local preview is a production deployment.
 
 ## Publishing
 
