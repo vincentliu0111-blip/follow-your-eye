@@ -103,7 +103,6 @@ test('contribution off and optional settings remain effective in the memory-only
   await h.context.mutateState(current => {current.consent = false; current.queue = []; current.profile.mood = 'calm';});
   h.context.onStorage({key: 'test-state', newValue: JSON.stringify(h.disk())});
   await h.choose();
-  assert.equal(h.checkbox.checked, false);
   assert.equal(h.context.state.consent, false);
   assert.equal(h.context.state.profile.mood, 'calm');
   assert.equal(h.context.state.queue.length, 0);

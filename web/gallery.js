@@ -7,6 +7,8 @@ const PAGE_SIZE = 60;
 const LOCALE_KEY = 'follow-your-eye-language';
 let locale = 'en';
 try { locale = localStorage.getItem(LOCALE_KEY) === 'zh' ? 'zh' : 'en'; } catch {}
+const requestedLanguage=new URLSearchParams(location.search).get('lang');
+if(['en','zh'].includes(requestedLanguage)){locale=requestedLanguage;try{localStorage.setItem(LOCALE_KEY,locale);}catch{}}
 let artworks = [], filtered = [], shown = 0, period = 'all', westernArtworkIds = new Set();
 let zoomScale = 1, zoomX = 0, zoomY = 0, dragPoint = null;
 

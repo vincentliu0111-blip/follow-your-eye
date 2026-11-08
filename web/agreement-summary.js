@@ -19,32 +19,22 @@ async function showAgreement() {
   const calibration = Object.values(data.ai.calibration);
   const repeat = calibration.map(item => percent(item.repeatRate));
   const swapped = calibration.map(item => percent(item.swappedRate));
-  const human = data.human;
-  const date = human.asOfTime || human.asOf;
-  const cohorts = human.aiByRatingSource;
-  const cohortNumber = key => `${number(cohorts[key].kappa)} (${cohorts[key].n.toLocaleString('en-US')} choices)`;
-  const cohortNumberZh = key => `${number(cohorts[key].kappa)}（${cohorts[key].n.toLocaleString('zh-CN')} 次选择）`;
   const values = {
     en: [
       `Six AI judges: Fleiss’ κ ${number(data.ai.fleiss.kappa)} across ${data.ai.fleiss.nPairs.toLocaleString('en-US')} evaluated pairs — ${reading(data.ai.fleiss.kappa, 'en')} agreement.`,
       `Asked again on the same pair, each judge kept the same artwork ${Math.min(...repeat)}–${Math.max(...repeat)}% of the time. After left and right were swapped, that fell to ${Math.min(...swapped)}–${Math.max(...swapped)}%.`,
-      `Saved-choice snapshot: Cohen’s κ ${number(human.comparisons.aiJudges.kappa)} (${reading(human.comparisons.aiJudges.kappa, 'en')}; 95% interval ${number(human.comparisons.aiJudges.interval95.lower)}–${number(human.comparisons.aiJudges.interval95.upper)}) with the weighted AI preference and ${number(human.comparisons.featureModel.kappa)} (${reading(human.comparisons.featureModel.kappa, 'en')}; 95% interval ${number(human.comparisons.featureModel.interval95.lower)}–${number(human.comparisons.featureModel.interval95.upper)}) with the feature model (${human.choices.toLocaleString('en-US')} non-skip choices from ${human.anonymousSessions} browser sessions identified by random IDs, through ${date}). These are preliminary.`,
     ],
     zh: [
       `六位 AI 裁判：在 ${data.ai.fleiss.nPairs.toLocaleString('zh-CN')} 组已评测画对上，Fleiss’ κ 为 ${number(data.ai.fleiss.kappa)}，按常用读法属于${reading(data.ai.fleiss.kappa, 'zh')}一致。`,
       `同一位裁判再选一次，${Math.min(...repeat)}–${Math.max(...repeat)}% 仍选同一幅；左右位置对调后，保留原选择的比例降为 ${Math.min(...swapped)}–${Math.max(...swapped)}%。`,
-      `已保存选择的统计快照：与加权 AI 偏好的 Cohen’s κ 为 ${number(human.comparisons.aiJudges.kappa)}（${reading(human.comparisons.aiJudges.kappa, 'zh')}；95% 区间 ${number(human.comparisons.aiJudges.interval95.lower)}–${number(human.comparisons.aiJudges.interval95.upper)}），与特征模型为 ${number(human.comparisons.featureModel.kappa)}（${reading(human.comparisons.featureModel.kappa, 'zh')}；95% 区间 ${number(human.comparisons.featureModel.interval95.lower)}–${number(human.comparisons.featureModel.interval95.upper)}）。本快照基于 ${human.choices.toLocaleString('zh-CN')} 次非跳过选择、${human.anonymousSessions} 个以随机编号区分的浏览器会话，截于 ${date}；记录数不等于独立人数。`,
     ],
   };
   for (const locale of Object.keys(targets)) {
-    targets[locale].forEach((id, index) => {
+    targets[locale].slice(0,2).forEach((id, index) => {
       document.getElementById(id).textContent = values[locale][index];
     });
   }
-  document.getElementById('agreementCohorts').textContent =
-    `The weighted AI preference combines three rating batches. Visitor κ by batch: original study ${cohortNumber('original-study')}; first new batch ${cohortNumber('six-judge-met-v1')}; later new batch ${cohortNumber('six-judge-met-all-v1')}. These groups have different pairs and are descriptive.`;
-  document.getElementById('agreementCohortsZh').textContent =
-    `加权 AI 偏好来自三批评测。按批次看，访客与 AI 的 κ：原始研究 ${cohortNumberZh('original-study')}；第一批新增画对 ${cohortNumberZh('six-judge-met-v1')}；后一批新增画对 ${cohortNumberZh('six-judge-met-all-v1')}。各批画对不同，仅作描述。`;
+
 }
 
 async function showLiveCount() {
@@ -57,9 +47,9 @@ async function showLiveCount() {
   if (data.ok !== true || !Number.isSafeInteger(data.choices) || data.choices < 0)
     throw new Error('Invalid choice count');
   document.getElementById('agreementLive').textContent =
-    `Current saved choices: ${data.choices.toLocaleString('en-US')} non-skip choices (live database count; not distinct visitors).`;
+    `Eligible formal-study choices: ${data.choices.toLocaleString('en-US')} non-skip choices (live database count; not distinct visitors).`;
   document.getElementById('agreementLiveZh').textContent =
-    `当前已保存：${data.choices.toLocaleString('zh-CN')} 次非跳过选择（实时数据库计数，不是独立访客人数）。`;
+    `符合正式研究纳入规则：${data.choices.toLocaleString('zh-CN')} 次非跳过选择（实时数据库计数，不是独立访客人数）。`;
 }
 
 function refreshLiveCount() {

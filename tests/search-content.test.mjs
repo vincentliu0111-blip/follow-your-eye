@@ -17,7 +17,7 @@ test('all sitemap routes exist, have self canonicals and resolve internal links 
   const pathname=new URL(url).pathname,p=pathname.endsWith('/')?local(url):path.join(root,'web',pathname),html=readFileSync(p,'utf8');
   assert.ok(html.includes(`rel="canonical" href="${url}"`),url);
   for(const m of html.matchAll(/(?:href|src)="([^"#]+)"/g)){
-   const target=decode(m[1]);if(target.startsWith('https:')||target.startsWith('data:'))continue;
+   const target=decode(m[1]);if(target.startsWith('https:')||target.startsWith('data:')||target.startsWith('mailto:'))continue;
    const linked=new URL(target,url),file=linked.pathname.endsWith('/')?local(linked):path.join(root,'web',linked.pathname);
    assert.ok(existsSync(file),`${url}: missing ${target}`);
   }

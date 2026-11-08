@@ -12,9 +12,10 @@
   <meta property="og:image" content="https://vincentliu.ai/img/436940.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <title>The idea — Follow Your Eye</title>
-  <link rel="stylesheet" href="style.css?v=20261103-research-minimal-v1">
+  <link rel="stylesheet" href="style.css?v=20261107-study-release-v2">
   <link rel="stylesheet" href="about.css?v=20261013-v2">
-  <script defer src="agreement-summary.js?v=20261103-research-minimal-v1"></script>
+  <script defer src="agreement-summary.js?v=20261107-study-release-v2"></script>
+  <script type="module" src="study-controls.mjs?v=20261107-v2"></script>
 </head>
 <body>
   <div class="app-shell">
@@ -33,17 +34,26 @@
         <h2 id="agreementHeading">Who agrees with whom?</h2>
         <p id="agreementAi">Loading the agreement snapshot…</p>
         <p id="agreementRepeat"></p>
-        <p id="agreementPeople"></p>
-        <p id="agreementCohorts"></p>
+        <p id="agreementPeople" hidden></p>
+        <p id="agreementCohorts" hidden></p>
         <p id="agreementLive">Loading the current saved-choice count…</p>
-        <p class="agreement-caveat">A CMU professor suggested adding a chance-adjusted comparison. Codex assisted with the analysis code and website display. Kappa adjusts for agreement expected from each side’s overall A/B choices. The labels “slight,” “fair” and “moderate” are conventions, not grades. The visitor intervals resample browser sessions identified by random IDs, which are not verified people. Many choices in this snapshot arrived in a short period, and some sessions have timing records inconsistent with the site's normal one-at-a-time flow. Those records are not removed because of timing: the live count includes every saved non-skip A/B choice, and each visitor kappa includes all choices eligible for that comparison (excluding skips and exact prediction ties). The records do not establish whether each session was an independent person or what caused the timing discrepancy. Agreement says nothing about which choice is right. Kappa and its interval are a dated snapshot; only the saved-choice count above updates live.</p>
+        <p class="agreement-caveat">AI agreement is a dated baseline, not a measure of objective beauty. The live count uses only eligible formal-study answers. Historical visitor agreement snapshots are not displayed as formal-study results. Codex assisted with analysis code and website implementation.</p>
       </section>
       <section id="research-data" aria-labelledby="research-data-title">
-        <h2 id="research-data-title">Research notice</h2>
-        <p>Your choices and skips are collected for Vincent Liu’s research comparing human painting preferences with AI judgments.</p>
-        <p lang="zh-CN"><a href="#research-data-zh">阅读中文版研究告知 ↓</a></p>
+        <h2 id="research-data-title">Research details &amp; contact</h2>
+        <p>I am Vincent Liu, a high school student conducting this research with guidance. I am comparing people’s painting preferences with AI predictions. Participation is voluntary, restricted to adults aged 18 or older, and unpaid. Each round has up to ten painting pairs; you can skip any pair or exit at any time. Allow about 3–5 minutes (an estimate; to be checked before the formal study opens). Some artworks may be uncomfortable to view. There is no guaranteed personal benefit.</p>
+        <p><strong>Study status:</strong> formal research has not opened and no ethics approval or exemption is claimed. On the public site, new study sessions and answers are not collected while participation is closed. Development practice answers remain separate test data. Browsing the gallery, opening artwork or shared links, or pressing a key never enrolls you. Only the explicit adult participation button creates a study session.</p>
+        <h3>What is saved, and where?</h3>
+        <p>Your browser keeps your round, collection and optional mood, interests and personal language preference locally. These optional preferences are not uploaded. After you agree, the study database stores a random study-session reference, adult confirmation, server-recorded consent time in UTC, notice version and notice language. Each answer stores an event and round reference, question order, pair and actual left/right artwork IDs, selected artwork or skip, display layout, display and choice times, server receipt time, dataset version and frozen research configuration. The browser also holds a private session access token and any unsent answers; do not share that token.</p>
+        <p>After formal opening, new study records will be stored in Cloudflare D1. Local development tests use a separate database and are excluded from formal research. New research records do not contain IP, inferred location, advertising/device identifiers or optional personal preferences. Random session references link a person’s answers within a session, so this is not a promise of complete anonymity. Hosting providers necessarily process network requests and may handle IP addresses and service logs; their current settings and backup/log retention must be verified before formal opening.</p>
+        <h3>Access, privacy and retention</h3>
+        <p>Vincent can access the study records; no additional research collaborator is granted access by this change. The hosting provider may process data to operate the service. Possible risks include unintended disclosure of linked answers. Individual answer records are not published by this site; results may be reported in aggregate in a paper. New study records are retained for one year after the study ends, then deleted from the active study database. Provider backups and logs have separate retention arrangements that must be confirmed before the study opens.</p>
+        <h3>Exit and deletion</h3>
+        <p>“Exit research” stops new choices for that session, clears unsent answers and returns you to the gallery. Previously submitted answers remain unless you request deletion. The gallery and this page offer “Delete this session’s submitted answers” when the browser still holds its session access. Deletion removes that session’s answers from the active study database and from future database exports and live totals. A minimal ended-session record remains until the retention deadline to prevent resumed uploads. Already published aggregate results and previously downloaded copies are not automatically recalled; contact Vincent about those copies.</p>
+        <p>If you exit or request deletion offline, new choices and uploads stop locally and the request waits for a connection. Keep this browser’s data and return online to finish it. Other devices cannot learn about an offline exit immediately. If browser data is lost, email your session reference if available; without a matching reference, your answers may not be identifiable for deletion. Clearing browser storage alone does not delete server records.</p>
+        <p><strong>Research eligibility:</strong> public vote totals and paper exports include only production answers after the configured formal start, from sessions explicitly consented after that start, answered after consent and before withdrawal and study end. Test answers and historical sessions/queues are excluded. Late uploads retain the actual choice time; receiving them later does not make them eligible. Historical data are kept separate pending a specific determination about their use.</p>
+        <p>Questions or data requests: <a href="mailto:vincentliu0111@gmail.com">vincentliu0111@gmail.com</a>. <a href="#research-data-zh" lang="zh-CN">阅读中文版 ↓</a></p>
       </section>
-      <h2>Saving your choices</h2><p>Choices are kept in this browser and uploaded in the background. If online saving fails, you can keep choosing and see your round result. Waiting choices can sync when the connection returns while the site is open. Clearing browser data can remove unsynced choices; if browser storage is unavailable, progress stays in the current tab only. Public vote totals include only accepted online saves.</p>
       <h2>Artwork credits</h2>
       <p>Images and artwork information come from <a href="https://www.metmuseum.org/about-the-met/policies-and-documents/open-access" target="_blank" rel="noopener noreferrer">The Met Open Access</a>. An online collection record does not mean an artwork is currently on view.</p>
       <p><a class="primary-button" href="./">Follow your eye</a> <a class="primary-button" href="gallery.html">Explore the gallery</a></p>
@@ -62,20 +72,30 @@
             <p>原题库沿用已有的 AI 评审和图像特征模型结果；新增画对也取得相同六套 AI 评审配置的结果。图像特征预测按原方法重新计算：旧结果核对到小数点后四位一致，但模型文件的指纹并不相同。你选画时不会实时调用 AI。</p>
             <p>结果里的“一致”只表示你和 AI 在这些画对上作出了相同选择，不代表判断正确，也不是美的客观分数。页面提到的亮度、饱和度、细节或对称性是图像测量值，不能解释你为什么喜欢一幅画。参与者也并非随机抽样；票数不等于独立人数，更不代表大众审美。</p>
             <div class="agreement-explainer" aria-labelledby="agreementHeadingZh"><h3 id="agreementHeadingZh">谁和谁意见一致？</h3>
-              <p id="agreementAiZh">正在加载一致性统计快照……</p><p id="agreementRepeatZh"></p><p id="agreementPeopleZh"></p><p id="agreementCohortsZh"></p><p id="agreementLiveZh">正在读取当前已保存选择数……</p>
-              <p class="agreement-caveat">加入扣除碰巧一致的比较，来自一位 CMU 教授的建议；统计程序和网站展示由 Codex 协助实现。Kappa 会按双方总体 A/B 选择比例计算预期的一致。“轻微、一般、中等”只是常用约定，不是成绩。访客区间按以随机编号区分的浏览器会话重新抽样，会话不等于已核实的人。本次快照有大量选择集中在短时间内，部分会话的时间记录与网站正常逐题保存流程不一致。这些记录不会因时间异常被剔除：实时总数计入所有已保存的非跳过 A/B 选择；访客 κ 计入各项比较中符合条件的全部选择（跳过与预测恰好打平者不计入该项 κ）。记录无法证明每个会话都来自独立真人，也无法确定时间差异的成因。这个指标也不能判断谁选得对。Kappa 和区间仍是定期快照，只有上方的已保存选择数实时更新。</p>
+              <p id="agreementAiZh">正在加载一致性统计快照……</p><p id="agreementRepeatZh"></p><p id="agreementPeopleZh" hidden></p><p id="agreementCohortsZh" hidden></p><p id="agreementLiveZh">正在读取当前已保存选择数……</p>
+              <p class="agreement-caveat">AI 一致程度是有日期的基线，不是客观美的标准。实时票数仅使用符合正式研究规则的回答；历史访客一致性快照不作为正式研究结果展示。分析代码与网站实现由 Codex 协助完成。</p>
             </div>
           </section>
           <section id="research-data-zh" aria-labelledby="research-data-title-zh">
-            <h3 id="research-data-title-zh">研究告知</h3>
-            <p>你的选择与跳过记录会被收集，用于 Vincent Liu 比较人类绘画偏好与 AI 判断的研究。</p>
+            <h3 id="research-data-title-zh">研究详情与联系方式</h3>
+            <p>我是 Vincent Liu，一名在指导下开展这项研究的高中生。我想了解大家喜欢的画作与 AI 预测的结果有多一致。仅邀请已满 18 岁的成年人自愿参加，没有报酬。每轮最多 10 对画，可跳过任何一组或随时退出。约需 3–5 分钟（预计时长，正式开放前将实测确认）。部分画作可能引起轻微不适；参加不保证有个人收益。</p>
+            <p><strong>研究状态：</strong>正式研究尚未开放，也不表示已获伦理批准或豁免。正式网站在参加入口关闭期间不建立新的研究会话或收集回答；开发练习回答属于单独的测试数据。浏览画廊、打开作品页或分享链接、按键，都不会让你加入研究；只有点击明确的成年人自愿参加按钮才会建立研究会话。</p>
+            <h4>保存什么，存在哪里？</h4>
+            <p>浏览器本地保留轮次、收藏及可选的心情、兴趣和个人语言偏好；这些偏好不作为研究数据上传。同意后，研究数据库保存随机研究会话编号、18 岁以上确认、服务端记录的 UTC 同意时间、告知版本及告知语言。每条回答保存事件和轮次编号、题序、画对及实际左右作品编号、选中的作品或跳过、展示布局、展示与实际作答时间、服务器收件时间、题库和研究配置版本。浏览器还保留私有的会话访问凭证及未发送回答；请勿分享访问凭证。</p>
+            <p>正式开放后，新版研究记录将保存在 Cloudflare D1；本地开发测试使用独立数据库，不纳入正式研究。新版研究记录不保存 IP、推断位置、广告或设备标识，也不上传上述个人偏好。随机会话编号会关联同一次参与的回答，因此不承诺完全匿名。网站服务商处理网络请求时可能接触 IP 和服务日志；其当前设置以及日志、备份保留期限，正式开放前仍需核实。</p>
+            <h4>谁能查看、风险与期限</h4>
+            <p>Vincent 可查看研究记录；此次修改未向其他研究协作者授予权限。托管服务商可能为运行服务而处理数据。隐私风险包括相互关联的回答意外泄露。网站不公开逐条回答，研究结果可能以汇总形式发表于论文中。新版研究记录在研究结束后保存 1 年，随后从主研究数据库删除；服务商备份和日志另有保留安排，须在正式开放前确认。</p>
+            <h4>退出和删除</h4>
+            <p>点击“退出研究”后，这次会话停止接收后续选择，未发送回答取消上传，并返回画廊。已提交回答会保留，除非你要求删除。浏览器仍保留会话访问凭证时，可在画廊或本页点击“删除这次会话已提交的回答”，从主数据库删除该会话的回答，并排除于今后的数据库导出和实时统计。最小的已结束会话记录会保留至期限届满，以阻止恢复上传。已发表的汇总结果和此前下载的副本不会自动撤回；相关请求请联系 Vincent。</p>
+            <p>断网时退出或申请删除，会立即在本地停止新作答与上传，联网后再同步请求。请保留此浏览器数据并联网返回以完成同步；其他设备无法立即得知一次断网退出。如果浏览器数据丢失，可提供会话编号发邮件联系；缺少能对应记录的编号时，可能无法定位回答。仅清除浏览器存储不等于删除服务器记录。</p>
+            <p><strong>研究纳入规则：</strong>公开票数与论文导出仅包含正式开始后明确同意的正式会话，并且回答实际发生在正式开始、同意之后及退出、研究结束之前。预览测试、旧会话和旧待传队列均不纳入。迟到上传仍按实际作答时间判断，不因今天收到就变成合格数据。历史数据单独保留，其研究用途需另行认定。</p>
+            <p>研究或数据问题请联系：<a href="mailto:vincentliu0111@gmail.com">vincentliu0111@gmail.com</a>。</p>
           </section>
-          <section><h3>选择如何保存</h3><p>选择会先保留在此浏览器，再尝试后台上传。在线保存失败时仍可继续选画并查看本轮结果；网站保持打开且连接恢复后，会再次尝试同步。清除浏览器数据可能丢失尚未同步的选择；浏览器存储不可用时，进度仅暂存在当前页面。公开票数仅包含已被在线接收的选择。</p></section>
           <section aria-labelledby="zh-credit"><h3 id="zh-credit">作品来源</h3><p>图片和作品资料来自<a href="https://www.metmuseum.org/about-the-met/policies-and-documents/open-access" target="_blank" rel="noopener noreferrer">大都会艺术博物馆开放资源</a>。作品能在线浏览，不代表它目前正在馆内展出。</p></section>
         </div>
       </details>
     </main>
-    <footer class="site-footer"><span>✳ Follow Your Eye</span><a href="gallery.html">Met gallery</a></footer>
+    <footer class="site-footer"><span>✳ Follow Your Eye</span><a href="gallery.html">Met gallery</a><a href="/about.html#research-data">研究详情与联系方式 / Research details &amp; contact</a></footer>
   </div>
 </body>
 </html>

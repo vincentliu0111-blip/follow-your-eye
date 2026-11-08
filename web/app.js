@@ -1,3 +1,4 @@
+import {StudyClient} from './study-client.mjs?v=20261107-v2';
 import {buildRoundWithPreference, agreement, cohenKappa, getInsight, chosenArtwork, isValidState, MOODS, INTERESTS} from './experience-core.mjs?v=20261030-discovery-v1';
 
 import {applyArtworkEntry, buildArtworkRound} from './artwork-entry.mjs?v=20261101-search-v1';
@@ -36,7 +37,7 @@ Object.assign(COPY.en, {
   compareAria:'Your choices compared with AI', compareCount:(n,d)=>`${n} of ${d} same choices`, compareNone:'No comparable choices yet',
   kappaTile:value=>`Cohen’s κ ${value}`,
   kappaNote:'At most 10 pairs; kappa is a rough guide only.',
-  seeDetails:'See details',playAgain:'Play another round — can you match the AI more closely?',shareResult:'Share result ↗',
+  seeDetails:'See details',playAgain:'Start another round',shareResult:'Share result ↗',
   linkCopied:'Link copied',shareFailed:'Could not copy. Please try again.',shareFallback:'I explored art with Follow Your Eye.',
   connectionProblem:'Online saving could not start. Please retry before choosing.',
   retryConnection:'Retry connection',
@@ -53,7 +54,7 @@ Object.assign(COPY.zh, {
   compareAria:'你的选择与 AI 的比较', compareCount:(n,d)=>`${d} 组中有 ${n} 组一致`, compareNone:'暂无可比较的选择',
   kappaTile:value=>`Cohen’s κ ${value}`,
   kappaNote:'最多 10 组画对；kappa 仅供参考。',
-  seeDetails:'查看明细',playAgain:'再来一轮，看你能不能和 AI 更合拍',shareResult:'分享结果 ↗',
+  seeDetails:'查看明细',playAgain:'开始下一轮',shareResult:'分享结果 ↗',
   linkCopied:'分享文字和链接已复制',shareFailed:'复制失败，请重试。',shareFallback:'我在 Follow Your Eye 探索了艺术作品。',
   connectionProblem:'在线保存暂时无法启动，请重试后再选画。',
   retryConnection:'重试连接',
@@ -99,12 +100,36 @@ Object.assign(COPY.zh, {
   researchDetails:'研究告知',
   researchBrowse:'只浏览画廊',
 });
+Object.assign(COPY.en, {
+  researchTitle:'About this research',researchPurpose:'Choose the painting you prefer. You can skip any pair or leave at any time.',researchDetails:'Research details & contact',researchBrowse:'Just browse the gallery',
+  consentTitle:'Your eye. Your choice.',consentIntro:'I am Vincent Liu, a high school student conducting this research with guidance. I want to understand how closely people’s painting preferences agree with AI predictions.',
+  consentTask:'Each round contains up to 10 painting pairs. Choose the one you prefer, skip any pair, or leave whenever you wish. Allow about 3–5 minutes (an estimate; timing will be checked before the formal study opens).',
+  consentUse:'Participation is voluntary and unpaid. Research findings may be published in aggregate in a paper. Questions about the study or your data: vincentliu0111@gmail.com.',
+  consentAccept:'I am 18 or older and voluntarily agree to participate',consentDecline:'Just browse the gallery',consentClose:'Close and browse',consentHint:'Under 18, or prefer not to participate? You are welcome to explore the gallery. Browsing does not enroll you.',
+  withdrawStudy:'Exit research',studyActive:'Research participation is active. You may skip or exit at any time.',
+  previewStudy:'Local preview · Formal research has not opened. Any practice answers here are test data and are excluded from research statistics.',
+  studyClosed:'The formal study is not open yet. Please browse the gallery; participation will become available after the required preparations.',consentConnectionError:'The study service could not be reached. Please retry or browse the gallery.',consentStorageError:'Browser storage is unavailable. You can still browse the gallery.',withdrawPending:'Your participation has stopped here. Keep this browser’s data and return online to finish sending the withdrawal or deletion request.',
+  settingsIntro:'These preferences stay in this browser and are not uploaded as research data.',languageNote:'This optional preference stays in this browser. The language of the research notice is recorded separately.',communityNote:'Only answers eligible for the formal study contribute to these totals.',
+});
+Object.assign(COPY.zh, {
+  researchTitle:'关于这项研究',researchPurpose:'请选择你更喜欢的画。你可以跳过任何一组，也可以随时退出。',researchDetails:'研究详情与联系方式',researchBrowse:'只浏览画廊',
+  consentTitle:'你的眼光，你来决定。',consentIntro:'我是 Vincent Liu，一名在指导下开展这项研究的高中生。我想了解大家喜欢的画作与 AI 预测的结果有多一致。',
+  consentTask:'每轮最多看 10 对画。你可以选出更喜欢的一幅，也可以跳过任何一组或随时退出。约需 3–5 分钟（预计时长，正式开放前将实测确认）。',
+  consentUse:'参加完全自愿，没有报酬。研究结果可能以汇总形式发表于论文中。如果对研究或你的数据如何使用有疑问，请联系：vincentliu0111@gmail.com。',
+  consentAccept:'我已满 18 岁，并自愿参加研究',consentDecline:'只浏览画廊',consentClose:'关闭并浏览',consentHint:'未满 18 岁，或不想参加？欢迎自由浏览画廊。浏览不会让你加入研究。',
+  withdrawStudy:'退出研究',studyActive:'你正在自愿参加研究，可随时跳过或退出。',previewStudy:'本地预览 · 正式研究尚未开放。这里的练习回答只作为测试数据，不计入研究统计。',
+  studyClosed:'正式研究尚未开放。你可以自由浏览画廊，完成所需准备后才会开放参加研究。',consentConnectionError:'暂时无法连接研究服务，请重试或先浏览画廊。',consentStorageError:'浏览器存储不可用，你仍可浏览画廊。',withdrawPending:'你在此处的参与已停止。请保留此浏览器数据，并在联网后返回，以完成退出或删除请求的同步。',
+  settingsIntro:'这些偏好只保存在此浏览器，不作为研究数据上传。',languageNote:'这项可选偏好只留在浏览器中；研究告知所用语言会单独记录。',communityNote:'这些票数仅包含符合正式研究纳入规则的回答。',
+});
 const t = (key, ...args) => typeof COPY[locale][key] === 'function' ? COPY[locale][key](...args) : COPY[locale][key] ?? COPY.en[key] ?? key;
 let data, pairsById, playablePairs, preferredOpening, westernPairIds, state;
 let view = 'play', busy = false, displayKey = '', renderToken = 0;
 let collector = false, connectionProblem = false, checkingCollector = false;
 let syncing = false, hasSynced = false, rejected = false, syncController;
 let collectorEndpoint = '';
+const study = new StudyClient();
+let consentBusy=false;
+study.addEventListener('change',()=>{if(data&&state){updateSync();updateStudyGate();if(study.active&&view==='play')renderPlay();}});
 let storageMessage = '', memoryOnly = false, communityRequest = 0, selectedComparison = null;
 let zoomScale = 1, zoomX = 0, zoomY = 0, dragPoint = null, zoomDragged = false;
 
@@ -118,6 +143,7 @@ function translate() {
   const researchLink = locale === 'zh' ? 'about.html#research-data-zh' : 'about.html#research-data';
   $('researchDetails').href = researchLink;
   $('researchFooter').href = researchLink;
+  $('consentDetails').href = researchLink;
   $('detailPage').textContent=t('artworkPage');
   $('backArtwork').textContent=t('backArtwork');
   $('startArtworkRound').textContent=t('startArtwork');
@@ -131,7 +157,7 @@ function translate() {
     else if (state.index >= state.deck.length) renderSummary(false);
     else renderPlay();
   }
-  updateStorageWarning();
+  updateStorageWarning(); updateStudyGate();
 }
 function uuid() {
   if (crypto.randomUUID) return crypto.randomUUID();
@@ -152,7 +178,7 @@ async function fetchWithTimeout(url, options, timeoutMs) {
 function freshState() {
   const sourceParam = new URLSearchParams(location.search).get('source') || 'direct';
   const source = /^[a-z0-9][a-z0-9_-]{0,63}$/.test(sourceParam) ? sourceParam : 'direct';
-  return {schema:2,source,presentation:null,datasetVersion:data.version,sessionId:uuid(),roundId:uuid(),roundNumber:1,consent:true,profile:{mood:'',interests:[],language:''},deck:buildRoundWithPreference(playablePairs,[],{openingPairIds:preferredOpening,preferredPairIds:westernPairIds}).deck,index:0,history:[],seen:[],queue:[]};
+  return {schema:2,source,presentation:null,datasetVersion:data.version,sessionId:uuid(),roundId:uuid(),roundNumber:1,consent:false,profile:{mood:'',interests:[],language:''},deck:buildRoundWithPreference(playablePairs,[],{openingPairIds:preferredOpening,preferredPairIds:westernPairIds}).deck,index:0,history:[],seen:[],queue:[]};
 }
 function save() {
   if (memoryOnly) { updateStorageWarning(); return; }
@@ -171,7 +197,7 @@ async function mutateState(mutate) {
     }
     const result = mutate(state);
     if (result !== false) save();
-    $('contribute').checked = state.consent;
+
     return result;
   };
   return navigator.locks ? navigator.locks.request(storageKey, change) : change();
@@ -185,14 +211,14 @@ function restore() {
     const raw = localStorage.getItem(storageKey);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (isValidState(parsed, data)) return parsed;
+      if (isValidState(parsed, data)) {parsed.consent=false;parsed.queue=[];return parsed;}
       storageMessage = 'restoredError';
     }
     const old = localStorage.getItem(STORAGE_BASE_KEY);
     if (old) {
       const parsed = JSON.parse(old);
       if (isValidState(parsed, data)) {
-        localStorage.setItem(storageKey, old);
+        parsed.consent=false;parsed.queue=[];localStorage.setItem(storageKey, JSON.stringify(parsed));
         storageMessage = '';
         return parsed;
       }
@@ -235,7 +261,7 @@ async function load() {
     state = restore();
     const entry = new URLSearchParams(location.search).get('artwork');
     await mutateState(current=>{
-      current.consent=true;
+      current.consent=false; current.queue=[];
       if(ARTWORK_PAGES[entry])applyArtworkEntry(current,entry,playablePairs,{openingPairIds:preferredOpening,preferredPairIds:westernPairIds});
     });
     $('loading').hidden = true; $('contributionBar').hidden = false;
@@ -247,8 +273,9 @@ async function load() {
 function setViews(next) {
   view = next;
   const completed = state.index >= state.deck.length;
-  $('playView').hidden = next !== 'play' || completed;
-  $('summaryView').hidden = next !== 'play' || !completed;
+  $('consentView').hidden = study.active || next !== 'play';
+  $('playView').hidden = next !== 'play' || completed || !study.active;
+  $('summaryView').hidden = next !== 'play' || !completed || !study.active;
   renderEntry();
   $('collectionView').hidden = next !== 'collection';
   $('playNav').classList.toggle('active', next === 'play');
@@ -259,6 +286,7 @@ function setViews(next) {
 function renderPlay() {
   if (!state) return;
   setViews('play');
+  if(!study.active)return;
   if (state.index >= state.deck.length) { renderSummary(); return; }
   const item = state.deck[state.index];
   $('roundLabel').textContent = t('round', state.roundNumber);
@@ -304,12 +332,12 @@ function setImage(img, art) {
   });
 }
 async function choose(side) {
-  if (!state || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
+  if (!state || !study.active || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
   if (side !== 'skip' && $(side === 'left' ? 'chooseLeft' : 'chooseRight').disabled) return;
   busy = true;
   const expectedRound = state.roundId, expectedIndex = state.index;
   const accepted = await mutateState(current => {
-    if (current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
+    if (!study.active || current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
     if(current.history.length>=10000){storageMessage='historyFull';updateStorageWarning();return false;}
     const item = current.deck[current.index], pair = pairsById.get(item.pairId);
     const chosenId = side === 'left' ? item.leftId : item.rightId;
@@ -317,12 +345,14 @@ async function choose(side) {
     const chosenAt = new Date().toISOString();
     if (Date.parse(chosenAt) < Date.parse(current.presentation.shownAt)) return false;
     const stacked=Math.abs($('chooseLeft').getBoundingClientRect().top-$('chooseRight').getBoundingClientRect().top)>5;
-    const record = {id:uuid(),sessionId:current.sessionId,roundId:current.roundId,datasetVersion:data.version,pairId:pair.id,leftId:item.leftId,rightId:item.rightId,choice,position:current.index+1,layout:stacked?'stacked':'side-by-side',source:current.source,shownAt:current.presentation.shownAt,chosenAt,elapsedMs:Math.min(3600000,Math.max(0,Date.parse(chosenAt)-Date.parse(current.presentation.shownAt))),profile:copyProfile(current.profile),consent:true};
+    const record = {id:uuid(),sessionId:current.sessionId,roundId:current.roundId,datasetVersion:data.version,pairId:pair.id,leftId:item.leftId,rightId:item.rightId,choice,position:current.index+1,layout:stacked?'stacked':'side-by-side',source:current.source,shownAt:current.presentation.shownAt,chosenAt,elapsedMs:Math.min(3600000,Math.max(0,Date.parse(chosenAt)-Date.parse(current.presentation.shownAt))),profile:copyProfile(current.profile),consent:false,chosenArtworkId:choice==='skip'?null:chosenId};
     current.history.push(record); if(!current.seen.includes(pair.id))current.seen.push(pair.id); current.index++; current.presentation=null;
-    current.queue.push(record);
+
     return true;
   });
   if (!accepted) {busy=false;displayKey='';renderPlay();return;}
+  const record=state.history.at(-1);
+  await study.enqueue(record);
   updateCollectionCount(); updateSync();
   $('chooseLeft').disabled=$('chooseRight').disabled=$('skipPair').disabled=true;
   if (side !== 'skip') {
@@ -496,65 +526,70 @@ function renderEntry() {
   $('backArtwork').href=page;
   $('startArtworkRound').hidden=!state.nextArtworkId || state.index<state.deck.length;
 }
-async function checkCollector() {
-  if(checkingCollector || syncing || !state)return;
-  checkingCollector=true;
-  try {
-    const configResponse=await fetchWithTimeout('./collection_config.json',{cache:'no-cache'},10000);
-    if(!configResponse.ok)throw new Error('Configuration unavailable');
-    const config=await configResponse.json();
-    const secureEndpoint=/^https:\/\/[a-z0-9.-]+(?:\/[^?#]*)?$/i.test(config.endpoint);
-    const localPreview=location.hostname==='127.0.0.1'&&/^http:\/\/127\.0\.0\.1:\d+$/.test(config.endpoint);
-    if(config.datasetVersion!==data.version||!(secureEndpoint||localPreview))throw new Error('Invalid collector configuration');
-    collectorEndpoint=config.endpoint.replace(/\/$/,'');
-    collector=true;connectionProblem=false;
-  }
-  catch{collector=false;connectionProblem=true;collectorEndpoint='';}
-  finally{checkingCollector=false;}
-  updateSync();
-  if(collector && state.queue.length)void syncChoices();
-}
-function updateSync() {
+function updateStudyGate(){
   if(!state)return;
-  const failed=(state.rejectedIds?.length ?? 0)>0;
-  const pending=state.queue.length;
-  $('syncStatus').textContent=pending?t(syncing?'syncingChoices':'pending',pending):failed?t('rejected'):!collector?t('unavailable'):hasSynced?t('savedStudy'):t('collectorReady');
-  $('connectionNotice').hidden=!connectionProblem || !!pending;
-  $('syncExplanation').hidden=!pending;
-  $('syncExplanation').textContent=pending?t(memoryOnly?'memoryPending':'localPending'):'';
-  $('rejectedNotice').hidden=!failed || !pending;
-  $('rejectedNotice').textContent=failed?t('rejected'):'';
-  $('retrySave').hidden=!pending || syncing;
-  $('retrySave').disabled=syncing;
+  $('consentAccept').disabled=consentBusy || !study.config || (!study.config.open&&!study.config.preview);
+  $('consentStatus').textContent=t(study.error==='storage'?'consentStorageError':study.error==='pending-exit'?'withdrawPending':study.error?'consentConnectionError':study.config?.preview?'previewStudy':!study.config?.open?'studyClosed':'');
+  $('consentStatus').hidden=!$('consentStatus').textContent;
+  $('withdrawStudy').hidden=$('summaryWithdraw').hidden=!study.active;
+  const shouldGate=view==='play'&&!study.active;
+  $('consentView').hidden=!shouldGate;
+  if(shouldGate){$('playView').hidden=$('summaryView').hidden=true;}
 }
-async function syncChoices() {
-  if(syncing||!state?.queue.length||!collector)return;
-  syncing=true;
-  updateSync();
+async function beginStudy(){
+  if(consentBusy||!state)return;consentBusy=true;updateStudyGate();
+  const enrolled=await study.enroll(locale);
+  if(enrolled){
+    await mutateState(current=>{
+      const entry=current.nextArtworkId||current.entryArtworkId;
+      const options={openingPairIds:preferredOpening,preferredPairIds:westernPairIds};
+      const next=entry?buildArtworkRound(playablePairs,current.seen,entry,options):buildRoundWithPreference(playablePairs,current.seen,options);
+      if(next.newCycle)current.seen=[];
+      current.deck=next.deck;current.index=0;current.roundId=uuid();current.roundNumber+=current.history.length?1:0;current.presentation=null;current.queue=[];current.consent=false;
+    });
+    displayKey='';renderPlay();
+  }
+  consentBusy=false;updateStudyGate();
+}
+async function withdrawStudy(){
+  // Local revocation happens before navigation and before any network acknowledgment.
+  const ending=study.end();updateStudyGate();
+  await Promise.race([ending,new Promise(resolve=>setTimeout(resolve,200))]);
+  location.href=`gallery.html?study=withdrawn&lang=${locale}`;
+}
+async function checkCollector(){
+  if(checkingCollector||!state)return;checkingCollector=true;
   try{
-    while(state.queue.length){
-      const event=state.queue[0];syncController=new AbortController();const timer=setTimeout(()=>syncController.abort(),20000);
-      let response;
-      try{response=await fetch(`${collectorEndpoint}/experience/choices`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(event),signal:syncController.signal});}finally{clearTimeout(timer);}
-      if(!response.ok){
-        // A malformed event must not block later valid choices. Auth, rate limits,
-        // routing failures and server errors remain retryable with the same ID.
-        if([400,409,413,422].includes(response.status)){
-          await mutateState(current=>{
-            current.rejectedIds=[...new Set([...(current.rejectedIds||[]),event.id])];
-            current.queue=current.queue.filter(item=>item.id!==event.id);
-          });
-          rejected=true;updateSync();continue;
-        }
-        collector=false;connectionProblem=true;break;
-      }
-      const result=await response.json();if(result.ok!==true || result.id!==event.id)throw new Error('Invalid acknowledgment');
-      await mutateState(current=>{current.queue=current.queue.filter(item=>item.id!==event.id);});hasSynced=true;updateSync();
-    }
-  }catch{collector=false;connectionProblem=true;}
-  finally{syncing=false;syncController=null;updateSync();if(view==='play'&&state.index>=state.deck.length)renderComparisons(currentRecords());}
+    const response=await fetchWithTimeout('./collection_config.json',{cache:'no-cache'},10000);
+    if(!response.ok)throw Error('configuration');const c=await response.json();
+    const secure=/^https:\/\/[a-z0-9.-]+(?:\/[^?#]*)?$/i.test(c.endpoint);
+    const local=location.hostname==='127.0.0.1'&&/^http:\/\/127\.0\.0\.1:\d+$/.test(c.endpoint);
+    if(c.datasetVersion!==data.version||!(secure||local))throw Error('configuration');
+    collectorEndpoint=c.endpoint.replace(/\/$/,'');collector=true;connectionProblem=false;
+    await study.initialize(collectorEndpoint);
+  }catch(error){collector=false;connectionProblem=true;study.error='connection';}
+  finally{checkingCollector=false;updateSync();updateStudyGate();}
 }
+function updateSync(){
+  if(!state)return;
+  const pending=study.pending;
+  $('contributionBar').hidden=!study.active&&!pending;
+  $('syncStatus').textContent=pending?t('pending',pending):t('studyActive');
+  $('connectionNotice').hidden=!study.active||!study.error;
+  $('syncExplanation').hidden=!pending;
+  $('syncExplanation').textContent=pending?t('localPending'):'';
+  $('rejectedNotice').hidden=!(study.read()?.rejected.length);
+  $('rejectedNotice').textContent=t('rejected');
+  $('retrySave').hidden=!pending||study.sending;
+  $('retrySave').disabled=study.sending;
+}
+async function syncChoices(){await study.flush();}
 
+$('consentAccept').addEventListener('click',beginStudy);
+for(const id of ['consentBrowse','consentClose'])$(id).addEventListener('click',event=>{event.preventDefault();void withdrawStudy();});
+$('withdrawStudy').addEventListener('click',withdrawStudy);
+$('activeBrowse').addEventListener('click',event=>{event.preventDefault();void withdrawStudy();});
+$('summaryWithdraw').addEventListener('click',withdrawStudy);
 $('chooseLeft').addEventListener('click',()=>choose('left'));
 $('chooseRight').addEventListener('click',()=>choose('right'));
 $('zoomLeft').addEventListener('click',()=>{if(state?.deck[state.index])openArtwork(state.deck[state.index].leftId);});
@@ -594,8 +629,9 @@ window.addEventListener('keydown',event=>{
   const side=event.key==='ArrowLeft'?'left':event.key==='ArrowRight'?'right':event.key.toLowerCase()==='s'?'skip':null;
   if(side&&state&&view==='play'&&state.index<state.deck.length){event.preventDefault();choose(side);}
 });
-window.addEventListener('storage',event=>{if(event.key!==storageKey||!data||memoryOnly)return;try{const raw=localStorage.getItem(storageKey);if(!raw)return;const latest=JSON.parse(raw);if(!isValidState(latest,data))return;const changed=latest.roundId!==state.roundId||latest.index!==state.index;state=latest;if(!state.consent)syncController?.abort();$('contribute').checked=state.consent;updateSync();updateCollectionCount();if(changed){displayKey='';if(view==='play')renderPlay();else renderCollection();}}catch{}});
+window.addEventListener('storage',event=>{if(event.key!==storageKey||!data||memoryOnly)return;try{const raw=localStorage.getItem(storageKey);if(!raw)return;const latest=JSON.parse(raw);if(!isValidState(latest,data))return;latest.consent=false;latest.queue=[];const changed=latest.roundId!==state.roundId||latest.index!==state.index;state=latest;updateSync();updateCollectionCount();if(changed){displayKey='';if(view==='play')renderPlay();else renderCollection();}}catch{}});
 window.addEventListener('online',checkCollector);
 window.addEventListener('focus',()=>{if(state)checkCollector();});
-setInterval(()=>{if(state?.queue.length&&!syncing)checkCollector();},15000);
+window.addEventListener('pageshow',event=>{if(event.persisted&&state){study.ready=false;updateStudyGate();void checkCollector();}});
+setInterval(()=>{if(study.pending||study.error)checkCollector();},15000);
 translate();load();
