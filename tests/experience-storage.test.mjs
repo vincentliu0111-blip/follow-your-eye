@@ -103,6 +103,7 @@ test('contribution off and optional settings remain effective in the memory-only
   await h.context.mutateState(current => {current.consent = false; current.queue = []; current.profile.mood = 'calm';});
   h.context.onStorage({key: 'test-state', newValue: JSON.stringify(h.disk())});
   await h.choose();
+  assert.equal(h.checkbox.checked, false);
   assert.equal(h.context.state.consent, false);
   assert.equal(h.context.state.profile.mood, 'calm');
   assert.equal(h.context.state.queue.length, 0);
@@ -123,12 +124,13 @@ test('single-tab fallback without Web Locks still preserves choices on quota fai
   assert.equal(isValidState(h.context.state, data), true);
 });
 
-test('a new dataset keeps the old browser snapshot under its original key', () => {
+test('a local-only session does not import the retired online browser snapshot', () => {
   const latest = JSON.parse(readFileSync(new URL('../web/met_experience_data.json', import.meta.url), 'utf8'));
-  const baseKey = 'follow-your-eye-experience-v1';
+  const baseKey = 'follow-your-eye-pre-cac-local-v1';
+  const oldOnlineKey = `follow-your-eye-experience-v1:${latest.version}`;
   const versionKey = `${baseKey}:${latest.version}`;
   const old = {datasetVersion: 'archived-met-paintings-v2', history: [{choice: 'A'}]};
-  const disk = new Map([[baseKey, JSON.stringify(old)]]);
+  const disk = new Map([[baseKey, JSON.stringify(old)], [oldOnlineKey, JSON.stringify(old)]]);
   const fresh = {
     schema: 2, datasetVersion: latest.version, source: 'test',
     sessionId: uuid(901), roundId: uuid(902), roundNumber: 1,
@@ -156,5 +158,6 @@ test('a new dataset keeps the old browser snapshot under its original key', () =
   disk.set(baseKey, JSON.stringify(fresh));
   disk.delete(versionKey);
   assert.equal(context.restore().datasetVersion, latest.version);
-  assert.equal(disk.get(versionKey), disk.get(baseKey), 'a matching legacy snapshot migrates once');
+  assert.equal(disk.has(versionKey), false, 'the old online snapshot is not migrated');
+  assert.equal(disk.get(oldOnlineKey), JSON.stringify(old), 'old online storage is untouched');
 });

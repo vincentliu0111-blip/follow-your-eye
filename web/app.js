@@ -1,32 +1,20 @@
-import {StudyClient} from './study-client.mjs?v=20261107-v2';
-import {buildRoundWithPreference, agreement, cohenKappa, getInsight, chosenArtwork, isValidState, MOODS, INTERESTS} from './experience-core.mjs?v=20261030-discovery-v1';
-
-import {applyArtworkEntry, buildArtworkRound} from './artwork-entry.mjs?v=20261101-search-v1';
-import {ARTWORK_PAGES, ZH_ARTWORK_PAGES} from './artwork-pages.mjs?v=20261101-search-v1';
+import {buildRoundWithPreference, agreement, cohenKappa, getInsight, chosenArtwork, isValidState, MOODS, INTERESTS} from './experience-core.mjs?v=20261018-public-v1';
 
 const $ = id => document.getElementById(id);
 // A new schema never backfills untimed choices from earlier prototypes.
-// Public play never constructs a study client or reuses a research round.
-// The separate, explicit research route retains its consent/service gate.
-const demoMode = new URLSearchParams(location.search).get('mode') !== 'research';
-const STORAGE_BASE_KEY = demoMode ? 'follow-your-eye-demo-v1' : 'follow-your-eye-experience-v1';
+// Separate browser-only rounds from old online queues and formal study data.
+const STORAGE_BASE_KEY = 'follow-your-eye-pre-cac-local-v1';
 let storageKey = STORAGE_BASE_KEY;
 const LOCALE_KEY = 'follow-your-eye-language';
 let locale = 'en';
 try { locale = localStorage.getItem(LOCALE_KEY) === 'zh' ? 'zh' : 'en'; } catch {}
-// Explicit language links from static guides also set the interactive UI locale.
-const requestedLanguage = new URLSearchParams(location.search).get('lang');
-if (requestedLanguage === 'en' || requestedLanguage === 'zh') {
-  locale=requestedLanguage;
-  try { localStorage.setItem(LOCALE_KEY,locale); } catch {}
-}
 const COPY = {
   en: {
-    play:'The experiment',metGallery:'Met gallery',collection:'Your collection',about:'The idea',private:'Public experience',loading:'Opening the gallery…',loadErrorTitle:'The gallery couldn’t open.',loadErrorText:'Check your connection and try again. Your saved picks will be here.',retry:'Try again',pendingTitle:'Saving your choice…',pendingExplanation:'Your next painting will appear after this choice is saved online.',retrySave:'Retry saving',eyebrow:'A LITTLE ART. A LITTLE INSTINCT.',title:'Trust your eye.',intro:'For anyone curious about art: choose the paintings you love and see where AI judges agree.',author:'By Vincent Liu',settings:'Make it yours',optional:'optional',roundNote:'10 choices. A new perspective.',thisOne:'Choose this one',keyboard:'Use ← → to choose · S to skip',skip:'Can’t decide? Skip this pair',revealNote:'Your perspective unfolds after the round.',roundComplete:'YOUR ROUND, REVEALED',summaryTitle:'A point of view. Yours.',smallDiscovery:'A SMALL DISCOVERY',insightLimit:'A glimpse of this round, not a label for your taste.',youAndAI:'YOU + AI JUDGES',inCommon:'in common',noScore:'Different taste is the whole point. This isn’t a score.',anotherRound:'Follow your curiosity.',anotherRoundSub:'A fresh set of artworks is waiting.',takeCloserLook:'TAKE A CLOSER LOOK',roundPicks:'The art that caught your eye',openArtwork:'Select an artwork to discover its story.',compareDetails:'Explore each choice & AI comparison',communityNote:'Collected votes from this public experience, including your own choice.',personalGallery:'YOUR PERSONAL GALLERY',collectionTitle:'A trail of curiosity.',backToPlay:'Keep exploring',collectionEmpty:'Your eye will lead the way.',collectionEmptyText:'Choose a few artworks and they’ll find a home here.',footerTag:'Art is for everyone. So is having an opinion.',sourceCredit:'Artworks from The Met Open Access',aboutLink:'About this experiment',optionalSetup:'OPTIONAL, ALWAYS',settingsTitle:'Come as you are.',settingsIntro:'A little context, if you feel like sharing. These choices won’t change which artworks you see.',moodTitle:'What’s your mood today?',interestsTitle:'What tends to catch your eye?',profileLanguage:'Which language do you feel most at home in?',preferNot:'Prefer not to say',anotherLanguage:'Another language / several languages',languageNote:'Language is optional context, not a measure of culture or identity.',done:'Back to the art',fromCollection:'FROM THE MET COLLECTION',detailInvitation:'Stay a little longer. Look for a detail you didn’t notice at first.',viewMet:'Explore at The Met',metNote:'Opens the museum’s official collection page. An online record doesn’t mean the artwork is currently on view.',on:'On',off:'Off',onlyDevice:'Saved in this browser only.',collectorReady:'Choose a painting to save it online.',savedStudy:'Your choice was saved online.',unavailable:'Online saving is unavailable. Please retry before choosing.',pending:n=>`${n} choice${n===1?'':'s'} waiting to sync.`,rejected:'Some choices could not be accepted. Your browser copy is safe.',round:n=>`ROUND ${String(n).padStart(2,'0')}`,pick:(n,total)=>`PICK ${String(n).padStart(2,'0')} OF ${total}`,summaryIntro:(p,s)=>`${p} artwork${p===1?'':'s'} chosen${s?`, ${s} pair${s===1?'':'s'} skipped`:''}. A little window into what moves you.`,shareSummary:(n,d)=>`This round, you and the AI judges chose the same artwork in ${n} of ${d} comparable pairs.`,judgeText:(n,d)=>`You chose the same artwork as the AI judges in ${n} of ${d} comparable pairs.`,modelText:(n,d)=>`Feature model: ${n} of ${d} choices in common.`,noComparisons:'No evaluated AI pairs in this round yet.',noModel:'No evaluated feature-model pairs in this round yet.',openMind:'Room for discovery.',openMindText:'Your choices took their own path this round. Keep exploring to see what catches your eye.',allSkippedTitle:'Take your time.',allSkippedText:'Nothing has to speak to you. A fresh round offers another place to start.',collectionIntro:n=>`${n} different artwork${n===1?'':'s'} you’ve chosen, gathered in one place.`,skipped:'You skipped this pair',yourPick:'Your pick',judges:'AI judges',model:'Feature model',support:'weighted support',prediction:'predicted probability',tie:'Tie',notAvailable:'Not available',samePick:'Same choice',differentPick:'Different choice',community:(n,total)=>`${n} of ${total} collected choices also picked this artwork.`,noCommunity:'No collected votes for this pair yet.',communityUnavailable:'Collected votes are unavailable.',imageError:'This artwork couldn’t load. You can skip this pair.',storageError:'Storage is full or unavailable. Keep using this tab; progress and settings now stay here only. Reloading may restore older progress and settings.',restoredError:'Your previous saved round couldn’t be restored. A new round is ready.',picked:'Choice selected; saving online…',skippedAnnounce:'Pair skipped; saving online…',leftArtwork:'Left artwork',rightArtwork:'Right artwork',chooseLeft:'Choose the left artwork',chooseRight:'Choose the right artwork',unknownArtist:'Artist not recorded',unknownDate:'Date not recorded',mood_calm:'Calm',mood_curious:'Curious',mood_energized:'Energized',mood_reflective:'Reflective',interest_landscape:'Landscapes',interest_people:'People',interest_nature:'Nature',interest_abstract:'Abstract forms',interest_stories:'Stories',interest_details:'Little details',
+    play:'The experiment',metGallery:'Met gallery',collection:'Your collection',about:'The idea',private:'Public experience',loading:'Opening the gallery…',loadErrorTitle:'The gallery couldn’t open.',loadErrorText:'Check your connection and try again. Your saved picks will be here.',retry:'Try again',pendingTitle:'Saving your choice…',pendingExplanation:'Your next painting will appear after it is saved in this browser.',retrySave:'Retry saving',eyebrow:'A LITTLE ART. A LITTLE INSTINCT.',title:'Trust your eye.',intro:'For anyone curious about art: choose the paintings you love and see where AI judges agree.',author:'By Vincent Liu',settings:'Make it yours',optional:'optional',roundNote:'10 choices. A new perspective.',thisOne:'Choose this one',keyboard:'Use ← → to choose · S to skip',skip:'Can’t decide? Skip this pair',revealNote:'Your perspective unfolds after the round.',roundComplete:'YOUR ROUND, REVEALED',summaryTitle:'A point of view. Yours.',smallDiscovery:'A SMALL DISCOVERY',insightLimit:'A glimpse of this round, not a label for your taste.',youAndAI:'YOU + AI JUDGES',inCommon:'in common',noScore:'Different taste is the whole point. This isn’t a score.',anotherRound:'Follow your curiosity.',anotherRoundSub:'A fresh set of artworks is waiting.',takeCloserLook:'TAKE A CLOSER LOOK',roundPicks:'The art that caught your eye',openArtwork:'Select an artwork to discover its story.',compareDetails:'Explore each choice & AI comparison',communityNote:'Your choices in this round stay in this browser.',personalGallery:'YOUR PERSONAL GALLERY',collectionTitle:'A trail of curiosity.',backToPlay:'Keep exploring',collectionEmpty:'Your eye will lead the way.',collectionEmptyText:'Choose a few artworks and they’ll find a home here.',footerTag:'Art is for everyone. So is having an opinion.',sourceCredit:'Artworks from The Met Open Access',aboutLink:'About this experiment',optionalSetup:'OPTIONAL, ALWAYS',settingsTitle:'Come as you are.',settingsIntro:'A little context, if you feel like sharing. These choices won’t change which artworks you see.',moodTitle:'What’s your mood today?',interestsTitle:'What tends to catch your eye?',profileLanguage:'Which language do you feel most at home in?',preferNot:'Prefer not to say',anotherLanguage:'Another language / several languages',languageNote:'Language is optional context, not a measure of culture or identity.',done:'Back to the art',fromCollection:'FROM THE MET COLLECTION',detailInvitation:'Stay a little longer. Look for a detail you didn’t notice at first.',viewMet:'Explore at The Met',metNote:'Opens the museum’s official collection page. An online record doesn’t mean the artwork is currently on view.',on:'On',off:'Off',onlyDevice:'Saved in this browser only.',collectorReady:'Choices stay in this browser.',savedStudy:'Your choice was saved in this browser.',unavailable:'Browser saving is unavailable.',pending:n=>`${n} choice${n===1?'':'s'} waiting to sync.`,rejected:'Some choices could not be accepted. Your browser copy is safe.',round:n=>`ROUND ${String(n).padStart(2,'0')}`,pick:(n,total)=>`PICK ${String(n).padStart(2,'0')} OF ${total}`,summaryIntro:(p,s)=>`${p} artwork${p===1?'':'s'} chosen${s?`, ${s} pair${s===1?'':'s'} skipped`:''}. A little window into what moves you.`,shareSummary:(n,d)=>`This round, you and the AI judges chose the same artwork in ${n} of ${d} comparable pairs.`,judgeText:(n,d)=>`You chose the same artwork as the AI judges in ${n} of ${d} comparable pairs.`,modelText:(n,d)=>`Feature model: ${n} of ${d} choices in common.`,noComparisons:'No evaluated AI pairs in this round yet.',noModel:'No evaluated feature-model pairs in this round yet.',openMind:'Room for discovery.',openMindText:'Your choices took their own path this round. Keep exploring to see what catches your eye.',allSkippedTitle:'Take your time.',allSkippedText:'Nothing has to speak to you. A fresh round offers another place to start.',collectionIntro:n=>`${n} different artwork${n===1?'':'s'} you’ve chosen, gathered in one place.`,skipped:'You skipped this pair',yourPick:'Your pick',judges:'AI judges',model:'Feature model',support:'weighted support',prediction:'predicted probability',tie:'Tie',notAvailable:'Not available',samePick:'Same choice',differentPick:'Different choice',community:(n,total)=>`${n} of ${total} collected choices also picked this artwork.`,noCommunity:'No collected votes for this pair yet.',communityUnavailable:'Collected votes are unavailable.',imageError:'This artwork couldn’t load. You can skip this pair.',storageError:'Storage is full or unavailable. Keep using this tab; progress and settings now stay here only. Reloading may restore older progress and settings.',restoredError:'Your previous saved round couldn’t be restored. A new round is ready.',picked:'Choice saved in this browser.',skippedAnnounce:'Pair skipped; progress saved in this browser.',leftArtwork:'Left artwork',rightArtwork:'Right artwork',chooseLeft:'Choose the left artwork',chooseRight:'Choose the right artwork',unknownArtist:'Artist not recorded',unknownDate:'Date not recorded',mood_calm:'Calm',mood_curious:'Curious',mood_energized:'Energized',mood_reflective:'Reflective',interest_landscape:'Landscapes',interest_people:'People',interest_nature:'Nature',interest_abstract:'Abstract forms',interest_stories:'Stories',interest_details:'Little details',
     brightness_higher:'A pull toward light.',brightness_lower:'A taste for deeper tones.',saturation_higher:'Color caught your eye.',saturation_lower:'An eye for quieter color.',detail_higher:'Drawn to the details.',detail_lower:'Room to breathe.',symmetry_higher:'Finding a little balance.',symmetry_lower:'An unexpected balance.',insight:(feature,n,total)=>`You chose the ${feature} image in ${n} of ${total} comparable pairs.`,dimension_brightness_higher:'brighter',dimension_brightness_lower:'darker',dimension_saturation_higher:'more saturated',dimension_saturation_lower:'less saturated',dimension_detail_higher:'more edge-dense',dimension_detail_lower:'less edge-dense',dimension_symmetry_higher:'more left–right symmetrical',dimension_symmetry_lower:'less left–right symmetrical',
   },
   zh: {
-    play:'开始探索',metGallery:'大都会画廊',collection:'我的收藏',about:'关于实验',private:'公开体验',loading:'正在打开画廊…',loadErrorTitle:'画廊暂时没有打开。',loadErrorText:'请检查连接后重试。已保存的选择会留在这里。',retry:'重试',pendingTitle:'正在保存你的选择……',pendingExplanation:'保存成功后才会出现下一组画。',retrySave:'重试保存',eyebrow:'一点艺术，一点直觉。',title:'相信你的眼光。',intro:'给好奇艺术的人：选出你喜欢的画，看看 AI 裁判是否与你眼光相同。',author:'作者：Vincent Liu',settings:'我的偏好',optional:'可跳过',roundNote:'10 次选择，发现一点不一样。',thisOne:'选这一幅',keyboard:'按 ← → 选择 · S 跳过',skip:'难以决定？跳过这一组',revealNote:'完成一轮，再发现你的视角。',roundComplete:'这一轮，你的视角',summaryTitle:'你的眼光，自有不同。',smallDiscovery:'一个小小的发现',insightLimit:'这只是本轮的观察，不是给你的审美贴标签。',youAndAI:'你与 AI 裁判',inCommon:'选择一致',noScore:'不同的偏好才有趣。这不是审美成绩。',anotherRound:'让好奇心继续。',anotherRoundSub:'下一组作品，等你发现。',takeCloserLook:'再靠近一点',roundPicks:'那些吸引你的作品',openArtwork:'点击作品，继续了解它。',compareDetails:'逐一回顾你的选择与 AI 偏好',communityNote:'投票统计来自这个公开体验，也包含你的选择。',personalGallery:'属于你的小画廊',collectionTitle:'好奇心走过的地方。',backToPlay:'继续探索',collectionEmpty:'让你的眼光带路。',collectionEmptyText:'选几幅喜欢的作品，它们就会出现在这里。',footerTag:'人人都可以亲近艺术，也可以拥有自己的看法。',sourceCredit:'作品来自大都会博物馆开放资源',aboutLink:'关于这项实验',optionalSetup:'随时可选，也可跳过',settingsTitle:'带着此刻的自己。',settingsIntro:'如果愿意，可以留下少量背景信息。它们不会改变你看到的作品。',moodTitle:'你此刻的心情如何？',interestsTitle:'什么通常会吸引你的目光？',profileLanguage:'你最习惯使用哪种语言？',preferNot:'暂不提供',anotherLanguage:'其他语言／多种语言',languageNote:'语言只作可选背景信息，不代表文化或身份。',done:'回到作品',fromCollection:'来自大都会博物馆馆藏',detailInvitation:'再停留一会儿，找一个刚才没注意到的细节。',viewMet:'在大都会官网继续探索',metNote:'打开博物馆官方藏品页。存在网上记录不代表作品正在展出。',on:'开',off:'关',onlyDevice:'仅保存在当前浏览器。',collectorReady:'选画后会尝试在线保存。',savedStudy:'你的选择已在线保存。',unavailable:'在线保存暂不可用，请重试后再选画。',pending:n=>`${n} 条选择等待同步。`,rejected:'部分选择未被接收，浏览器副本仍保留。',round:n=>`第 ${String(n).padStart(2,'0')} 轮`,pick:(n,total)=>`第 ${String(n).padStart(2,'0')} / ${total} 组`,summaryIntro:(p,s)=>`选择了 ${p} 幅作品${s?`，跳过了 ${s} 组`:''}。看看什么打动了你。`,shareSummary:(n,d)=>`这一轮，你与 AI 裁判在 ${d} 组可比较的画作中有 ${n} 组选择相同。`,judgeText:(n,d)=>`在 ${d} 组可比较的选择中，你与 AI 裁判有 ${n} 次偏好相同。`,modelText:(n,d)=>`图像特征模型：${d} 次中有 ${n} 次与你一致。`,noComparisons:'本轮暂无已完成 AI 评测的画对。',noModel:'本轮暂无已完成特征模型评测的画对。',openMind:'给发现留一点空间。',openMindText:'这一轮，你的选择有自己的路线。继续看看还有什么吸引你。',allSkippedTitle:'慢慢来，也很好。',allSkippedText:'不必勉强喜欢任何一幅。新一轮还有其他作品等你。',collectionIntro:n=>`你选择过的 ${n} 幅不同作品，汇集成这一方小画廊。`,skipped:'这一组你选择了跳过',yourPick:'你的选择',judges:'AI 裁判',model:'特征模型',support:'加权支持度',prediction:'预测概率',tie:'平局',notAvailable:'暂无结果',samePick:'与你相同',differentPick:'与你不同',community:(n,total)=>`本组 ${total} 次已收集选择中，${n} 次也选择了这幅。`,noCommunity:'这一组暂时没有已收集投票。',communityUnavailable:'投票统计暂不可用。',imageError:'这幅作品未能加载，你可以跳过这一组。',storageError:'浏览器存储已满或不可用。可在此标签页继续体验；新进度和设置仅临时保留，刷新可能恢复旧进度与旧设置。',restoredError:'之前的存档无法恢复，已为你准备新一轮。',picked:'已选择，正在在线保存……',skippedAnnounce:'已跳过，正在在线保存……',leftArtwork:'左侧作品',rightArtwork:'右侧作品',chooseLeft:'选择左侧作品',chooseRight:'选择右侧作品',unknownArtist:'作者信息缺失',unknownDate:'年代信息缺失',mood_calm:'平静',mood_curious:'好奇',mood_energized:'充满活力',mood_reflective:'若有所思',interest_landscape:'风景',interest_people:'人物',interest_nature:'自然',interest_abstract:'抽象形式',interest_stories:'故事',interest_details:'细节',
+    play:'开始探索',metGallery:'大都会画廊',collection:'我的收藏',about:'关于实验',private:'公开体验',loading:'正在打开画廊…',loadErrorTitle:'画廊暂时没有打开。',loadErrorText:'请检查连接后重试。已保存的选择会留在这里。',retry:'重试',pendingTitle:'正在保存你的选择……',pendingExplanation:'保存在当前浏览器后会出现下一组画。',retrySave:'重试保存',eyebrow:'一点艺术，一点直觉。',title:'相信你的眼光。',intro:'给好奇艺术的人：选出你喜欢的画，看看 AI 裁判是否与你眼光相同。',author:'作者：Vincent Liu',settings:'我的偏好',optional:'可跳过',roundNote:'10 次选择，发现一点不一样。',thisOne:'选这一幅',keyboard:'按 ← → 选择 · S 跳过',skip:'难以决定？跳过这一组',revealNote:'完成一轮，再发现你的视角。',roundComplete:'这一轮，你的视角',summaryTitle:'你的眼光，自有不同。',smallDiscovery:'一个小小的发现',insightLimit:'这只是本轮的观察，不是给你的审美贴标签。',youAndAI:'你与 AI 裁判',inCommon:'选择一致',noScore:'不同的偏好才有趣。这不是审美成绩。',anotherRound:'让好奇心继续。',anotherRoundSub:'下一组作品，等你发现。',takeCloserLook:'再靠近一点',roundPicks:'那些吸引你的作品',openArtwork:'点击作品，继续了解它。',compareDetails:'逐一回顾你的选择与 AI 偏好',communityNote:'这一轮的选择仅保存在当前浏览器。',personalGallery:'属于你的小画廊',collectionTitle:'好奇心走过的地方。',backToPlay:'继续探索',collectionEmpty:'让你的眼光带路。',collectionEmptyText:'选几幅喜欢的作品，它们就会出现在这里。',footerTag:'人人都可以亲近艺术，也可以拥有自己的看法。',sourceCredit:'作品来自大都会博物馆开放资源',aboutLink:'关于这项实验',optionalSetup:'随时可选，也可跳过',settingsTitle:'带着此刻的自己。',settingsIntro:'如果愿意，可以留下少量背景信息。它们不会改变你看到的作品。',moodTitle:'你此刻的心情如何？',interestsTitle:'什么通常会吸引你的目光？',profileLanguage:'你最习惯使用哪种语言？',preferNot:'暂不提供',anotherLanguage:'其他语言／多种语言',languageNote:'语言只作可选背景信息，不代表文化或身份。',done:'回到作品',fromCollection:'来自大都会博物馆馆藏',detailInvitation:'再停留一会儿，找一个刚才没注意到的细节。',viewMet:'在大都会官网继续探索',metNote:'打开博物馆官方藏品页。存在网上记录不代表作品正在展出。',on:'开',off:'关',onlyDevice:'仅保存在当前浏览器。',collectorReady:'选择仅保存在当前浏览器。',savedStudy:'选择已保存在当前浏览器。',unavailable:'浏览器存储暂不可用。',pending:n=>`${n} 条选择等待同步。`,rejected:'部分选择未被接收，浏览器副本仍保留。',round:n=>`第 ${String(n).padStart(2,'0')} 轮`,pick:(n,total)=>`第 ${String(n).padStart(2,'0')} / ${total} 组`,summaryIntro:(p,s)=>`选择了 ${p} 幅作品${s?`，跳过了 ${s} 组`:''}。看看什么打动了你。`,shareSummary:(n,d)=>`这一轮，你与 AI 裁判在 ${d} 组可比较的画作中有 ${n} 组选择相同。`,judgeText:(n,d)=>`在 ${d} 组可比较的选择中，你与 AI 裁判有 ${n} 次偏好相同。`,modelText:(n,d)=>`图像特征模型：${d} 次中有 ${n} 次与你一致。`,noComparisons:'本轮暂无已完成 AI 评测的画对。',noModel:'本轮暂无已完成特征模型评测的画对。',openMind:'给发现留一点空间。',openMindText:'这一轮，你的选择有自己的路线。继续看看还有什么吸引你。',allSkippedTitle:'慢慢来，也很好。',allSkippedText:'不必勉强喜欢任何一幅。新一轮还有其他作品等你。',collectionIntro:n=>`你选择过的 ${n} 幅不同作品，汇集成这一方小画廊。`,skipped:'这一组你选择了跳过',yourPick:'你的选择',judges:'AI 裁判',model:'特征模型',support:'加权支持度',prediction:'预测概率',tie:'平局',notAvailable:'暂无结果',samePick:'与你相同',differentPick:'与你不同',community:(n,total)=>`本组 ${total} 次已收集选择中，${n} 次也选择了这幅。`,noCommunity:'这一组暂时没有已收集投票。',communityUnavailable:'投票统计暂不可用。',imageError:'这幅作品未能加载，你可以跳过这一组。',storageError:'浏览器存储已满或不可用。可在此标签页继续体验；新进度和设置仅临时保留，刷新可能恢复旧进度与旧设置。',restoredError:'之前的存档无法恢复，已为你准备新一轮。',picked:'已选择，进度保存在当前浏览器。',skippedAnnounce:'已跳过，进度保存在当前浏览器。',leftArtwork:'左侧作品',rightArtwork:'右侧作品',chooseLeft:'选择左侧作品',chooseRight:'选择右侧作品',unknownArtist:'作者信息缺失',unknownDate:'年代信息缺失',mood_calm:'平静',mood_curious:'好奇',mood_energized:'充满活力',mood_reflective:'若有所思',interest_landscape:'风景',interest_people:'人物',interest_nature:'自然',interest_abstract:'抽象形式',interest_stories:'故事',interest_details:'细节',
     brightness_higher:'被光亮吸引。',brightness_lower:'偏爱深一些的色调。',saturation_higher:'色彩抓住了你的目光。',saturation_lower:'看见安静的色彩。',detail_higher:'在细节里停留。',detail_lower:'给画面留一点呼吸。',symmetry_higher:'寻找一点平衡。',symmetry_lower:'意料之外的平衡。',insight:(feature,n,total)=>`在 ${total} 组可比较画对中，你有 ${n} 次选择了${feature}的图像。`,dimension_brightness_higher:'更明亮',dimension_brightness_lower:'更暗',dimension_saturation_higher:'饱和度更高',dimension_saturation_lower:'饱和度更低',dimension_detail_higher:'边缘更密集',dimension_detail_lower:'边缘更疏朗',dimension_symmetry_higher:'左右更对称',dimension_symmetry_lower:'左右较不对称',
   }
 };
@@ -40,7 +28,7 @@ Object.assign(COPY.en, {
   compareAria:'Your choices compared with AI', compareCount:(n,d)=>`${n} of ${d} same choices`, compareNone:'No comparable choices yet',
   kappaTile:value=>`Cohen’s κ ${value}`,
   kappaNote:'At most 10 pairs; kappa is a rough guide only.',
-  seeDetails:'See details',playAgain:'Start another round',shareResult:'Share result ↗',
+  seeDetails:'See details',playAgain:'Play another round — can you match the AI more closely?',shareResult:'Share result ↗',
   linkCopied:'Link copied',shareFailed:'Could not copy. Please try again.',shareFallback:'I explored art with Follow Your Eye.',
   connectionProblem:'Online saving could not start. Please retry before choosing.',
   retryConnection:'Retry connection',
@@ -57,102 +45,17 @@ Object.assign(COPY.zh, {
   compareAria:'你的选择与 AI 的比较', compareCount:(n,d)=>`${d} 组中有 ${n} 组一致`, compareNone:'暂无可比较的选择',
   kappaTile:value=>`Cohen’s κ ${value}`,
   kappaNote:'最多 10 组画对；kappa 仅供参考。',
-  seeDetails:'查看明细',playAgain:'开始下一轮',shareResult:'分享结果 ↗',
+  seeDetails:'查看明细',playAgain:'再来一轮，看你能不能和 AI 更合拍',shareResult:'分享结果 ↗',
   linkCopied:'分享文字和链接已复制',shareFailed:'复制失败，请重试。',shareFallback:'我在 Follow Your Eye 探索了艺术作品。',
   connectionProblem:'在线保存暂时无法启动，请重试后再选画。',
   retryConnection:'重试连接',
   saveFailed:'这次选择暂存在当前设备，还没有在线保存。请检查网络后重试。',
   tapZoom:'轻点画作放大',
 });
-
-Object.assign(COPY.en, {
-  unavailable:'Online saving is unavailable. You can keep choosing.',
-  connectionProblem:'Online saving is unavailable. Keep choosing; retry syncing when connected.',
-  pending:n=>`${n} choice${n===1?'':'s'} waiting to sync. You can keep choosing.`,
-  syncingChoices:n=>`Syncing ${n} choice${n===1?'':'s'}… You can keep choosing.`,
-  localPending:'Saved in this browser; not yet saved online. You can keep choosing.',
-  memoryPending:'Not saved online. Progress stays in this tab only; keep it open.',
-  rejected:'Some choices were not accepted online. They remain in your local history.',
-  artworkPage:'Explore this painting ↗', backArtwork:'Back to the painting',
-  queuedArtwork:'Your current round is safe. The painting you opened will start your next round.',
-  startArtwork:'Start the next round with this painting',
-  entryArtwork:'Your first comparison includes the painting you opened.',
-  historyFull:'This browser has reached its choice-history limit. Existing choices are safe.',
-  communityNote:'Collected votes from online saves; your unsynced choices are not included.',
-  researchTitle:'Before you choose',
-  researchPurpose:'Your choices and skips are collected for Vincent Liu’s research comparing human painting preferences with AI judgments.',
-  researchDetails:'Research notice',
-  researchBrowse:'Just browse the gallery',
-});
-Object.assign(COPY.zh, {
-  unavailable:'在线保存暂不可用，你仍可继续选画。',
-  connectionProblem:'在线保存暂不可用。可以继续选画，联网后重试同步。',
-  pending:n=>`${n} 条选择等待同步，你可以继续选画。`,
-  syncingChoices:n=>`正在同步 ${n} 条选择，你可以继续选画。`,
-  localPending:'已保存在此浏览器，尚未在线保存。你可以继续选画。',
-  memoryPending:'尚未在线保存，进度仅暂存在此页面，请保持页面打开。',
-  rejected:'部分选择未被在线接收，仍保留在本地作答记录中。',
-  artworkPage:'了解这幅作品 ↗', backArtwork:'返回作品页',
-  queuedArtwork:'当前一轮的进度已保留。你打开的作品会出现在下一轮的第一组。',
-  startArtwork:'从这幅作品开始下一轮',
-  entryArtwork:'第一组比较包含你刚才打开的作品。',
-  historyFull:'此浏览器的作答记录已达上限，已有选择仍保留。',
-  communityNote:'投票统计仅包含已在线保存的选择，尚未同步的选择不计入。',
-  researchTitle:'选画前，请先了解',
-  researchPurpose:'你的选择与跳过记录会被收集，用于 Vincent Liu 比较人类绘画偏好与 AI 判断的研究。',
-  researchDetails:'研究告知',
-  researchBrowse:'只浏览画廊',
-});
-Object.assign(COPY.en, {
-  researchTitle:'About this research',researchPurpose:'Choose the painting you prefer. You can skip any pair or leave at any time.',researchDetails:'Research details & contact',researchBrowse:'Just browse the gallery',
-  consentTitle:'Your eye. Your choice.',consentIntro:'I am Vincent Liu, a high school student conducting this research with guidance. I want to understand how closely people’s painting preferences agree with AI predictions.',
-  consentTask:'Each round contains up to 10 painting pairs. Choose the one you prefer, skip any pair, or leave whenever you wish. Allow about 3–5 minutes (an estimate; timing will be checked before the formal study opens).',
-  consentUse:'Participation is voluntary and unpaid. Research findings may be published in aggregate in a paper. Questions about the study or your data: vincentliu0111@gmail.com.',
-  consentAccept:'I am 18 or older and voluntarily agree to participate',consentDecline:'Just browse the gallery',consentClose:'Close and browse',consentHint:'Under 18, or prefer not to participate? You are welcome to explore the gallery. Browsing does not enroll you.',
-  withdrawStudy:'Exit research',studyActive:'Research participation is active. You may skip or exit at any time.',
-  previewStudy:'Local preview · Formal research has not opened. Any practice answers here are test data and are excluded from research statistics.',
-  studyClosed:'The formal study is not open yet. Please browse the gallery; participation will become available after the required preparations.',consentConnectionError:'The study service could not be reached. Please retry or browse the gallery.',consentStorageError:'Browser storage is unavailable. You can still browse the gallery.',withdrawPending:'Your participation has stopped here. Keep this browser’s data and return online to finish sending the withdrawal or deletion request.',
-  settingsIntro:'These preferences stay in this browser and are not uploaded as research data.',languageNote:'This optional preference stays in this browser. The language of the research notice is recorded separately.',communityNote:'Only answers eligible for the formal study contribute to these totals.',
-});
-Object.assign(COPY.zh, {
-  researchTitle:'关于这项研究',researchPurpose:'请选择你更喜欢的画。你可以跳过任何一组，也可以随时退出。',researchDetails:'研究详情与联系方式',researchBrowse:'只浏览画廊',
-  consentTitle:'你的眼光，你来决定。',consentIntro:'我是 Vincent Liu，一名在指导下开展这项研究的高中生。我想了解大家喜欢的画作与 AI 预测的结果有多一致。',
-  consentTask:'每轮最多看 10 对画。你可以选出更喜欢的一幅，也可以跳过任何一组或随时退出。约需 3–5 分钟（预计时长，正式开放前将实测确认）。',
-  consentUse:'参加完全自愿，没有报酬。研究结果可能以汇总形式发表于论文中。如果对研究或你的数据如何使用有疑问，请联系：vincentliu0111@gmail.com。',
-  consentAccept:'我已满 18 岁，并自愿参加研究',consentDecline:'只浏览画廊',consentClose:'关闭并浏览',consentHint:'未满 18 岁，或不想参加？欢迎自由浏览画廊。浏览不会让你加入研究。',
-  withdrawStudy:'退出研究',studyActive:'你正在自愿参加研究，可随时跳过或退出。',previewStudy:'本地预览 · 正式研究尚未开放。这里的练习回答只作为测试数据，不计入研究统计。',
-  studyClosed:'正式研究尚未开放。你可以自由浏览画廊，完成所需准备后才会开放参加研究。',consentConnectionError:'暂时无法连接研究服务，请重试或先浏览画廊。',consentStorageError:'浏览器存储不可用，你仍可浏览画廊。',withdrawPending:'你在此处的参与已停止。请保留此浏览器数据，并在联网后返回，以完成退出或删除请求的同步。',
-  settingsIntro:'这些偏好只保存在此浏览器，不作为研究数据上传。',languageNote:'这项可选偏好只留在浏览器中；研究告知所用语言会单独记录。',communityNote:'这些票数仅包含符合正式研究纳入规则的回答。',
-});
-if (demoMode) {
-  Object.assign(COPY.en, {
-    researchTitle:'Explore at your own pace',
-    researchPurpose:'Choose, skip, and compare with AI. Your answers stay in this browser and are not uploaded or used as research data.',
-    researchDetails:'About the experience & research',
-    picked:'Choice saved in this browser.',skippedAnnounce:'Pair skipped.',
-    languageNote:'This optional preference stays in this browser.',
-    communityNote:'These totals contain only eligible formal-study answers. Your public-experience choices are not included.',
-  });
-  Object.assign(COPY.zh, {
-    researchTitle:'跟着直觉，自由选画',
-    researchPurpose:'选画、跳过，再看看与 AI 的异同。答案只留在此浏览器，不上传，也不作为研究数据。',
-    researchDetails:'体验与研究说明',
-    picked:'选择已保存在此浏览器。',skippedAnnounce:'已跳过这一组。',
-    languageNote:'这项可选偏好只留在浏览器中。',
-    communityNote:'这些票数仅包含符合正式研究规则的回答，不包含本次公开体验中的选择。',
-  });
-}
 const t = (key, ...args) => typeof COPY[locale][key] === 'function' ? COPY[locale][key](...args) : COPY[locale][key] ?? COPY.en[key] ?? key;
 let data, pairsById, playablePairs, preferredOpening, westernPairIds, state;
 let view = 'play', busy = false, displayKey = '', renderToken = 0;
-let collector = false, connectionProblem = false, checkingCollector = false;
-let syncing = false, hasSynced = false, rejected = false, syncController;
-let collectorEndpoint = '';
-const study = demoMode ? null : new StudyClient();
-const canPlay = () => demoMode || study.active;
-let consentBusy=false;
-study?.addEventListener('change',()=>{if(data&&state){updateSync();updateStudyGate();if(study.active&&view==='play')renderPlay();}});
-let storageMessage = '', memoryOnly = false, communityRequest = 0, selectedComparison = null;
+let storageMessage = '', memoryOnly = false, selectedComparison = null;
 let zoomScale = 1, zoomX = 0, zoomY = 0, dragPoint = null, zoomDragged = false;
 
 function translate() {
@@ -162,13 +65,6 @@ function translate() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
   $('languageToggle').textContent = locale === 'en' ? '中文' : 'EN';
   $('languageToggle').setAttribute('aria-label', locale === 'en' ? 'Switch interface to Chinese' : 'Switch interface to English');
-  const researchLink = locale === 'zh' ? 'about.html#research-data-zh' : 'about.html#research-data';
-  $('researchDetails').href = researchLink;
-  $('researchFooter').href = researchLink;
-  $('consentDetails').href = researchLink;
-  $('detailPage').textContent=t('artworkPage');
-  $('backArtwork').textContent=t('backArtwork');
-  $('startArtworkRound').textContent=t('startArtwork');
   $('settingsOpen').setAttribute('aria-label', t('settings'));
   $('chooseLeft').setAttribute('aria-label', t('chooseLeft'));
   $('chooseRight').setAttribute('aria-label', t('chooseRight'));
@@ -179,7 +75,7 @@ function translate() {
     else if (state.index >= state.deck.length) renderSummary(false);
     else renderPlay();
   }
-  updateStorageWarning(); updateStudyGate();
+  updateStorageWarning();
 }
 function uuid() {
   if (crypto.randomUUID) return crypto.randomUUID();
@@ -190,12 +86,6 @@ function uuid() {
 }
 function copyProfile(profile) {
   return {mood:profile.mood, interests:[...profile.interests], language:profile.language};
-}
-async function fetchWithTimeout(url, options, timeoutMs) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try { return await fetch(url, {...options, signal:controller.signal}); }
-  finally { clearTimeout(timer); }
 }
 function freshState() {
   const sourceParam = new URLSearchParams(location.search).get('source') || 'direct';
@@ -211,7 +101,7 @@ function save() {
 // Healthy storage mutations reread the latest snapshot inside one named lock.
 // A failed write makes this tab's memory authoritative until reload: rereading
 // the older persisted snapshot would silently discard new choices and settings.
-// Acknowledgments only remove their own event, so another tab's queued picks survive.
+// Browser-only rounds never enqueue network requests.
 async function mutateState(mutate) {
   const change = () => {
     if (!memoryOnly) {
@@ -219,7 +109,7 @@ async function mutateState(mutate) {
     }
     const result = mutate(state);
     if (result !== false) save();
-
+    $('contribute').checked = false;
     return result;
   };
   return navigator.locks ? navigator.locks.request(storageKey, change) : change();
@@ -233,17 +123,8 @@ function restore() {
     const raw = localStorage.getItem(storageKey);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (isValidState(parsed, data)) {parsed.consent=false;parsed.queue=[];return parsed;}
+      if (isValidState(parsed, data)) return parsed;
       storageMessage = 'restoredError';
-    }
-    const old = localStorage.getItem(STORAGE_BASE_KEY);
-    if (old) {
-      const parsed = JSON.parse(old);
-      if (isValidState(parsed, data)) {
-        parsed.consent=false;parsed.queue=[];localStorage.setItem(storageKey, JSON.stringify(parsed));
-        storageMessage = '';
-        return parsed;
-      }
     }
   } catch { storageMessage = 'restoredError'; }
   return freshState();
@@ -280,14 +161,9 @@ async function load() {
     preferredOpening = data.openingPairs.filter(id => westernPairs.has(id));
     storageKey = `${STORAGE_BASE_KEY}:${data.version}`;
     pairsById = new Map(data.pairs.map(pair => [pair.id,pair]));
-    state = restore();
-    const entry = new URLSearchParams(location.search).get('artwork');
-    await mutateState(current=>{
-      current.consent=false; current.queue=[];
-      if(ARTWORK_PAGES[entry])applyArtworkEntry(current,entry,playablePairs,{openingPairIds:preferredOpening,preferredPairIds:westernPairIds});
-    });
+    state = restore(); state.consent = false; state.queue = []; $('contribute').checked = false;
     $('loading').hidden = true; $('contributionBar').hidden = false;
-    translate(); renderPlay(); checkCollector();
+    translate(); renderPlay(); updateSync();
   } catch {
     $('loading').hidden = true; $('loadError').hidden = false;
   }
@@ -295,10 +171,10 @@ async function load() {
 function setViews(next) {
   view = next;
   const completed = state.index >= state.deck.length;
-  $('consentView').hidden = canPlay() || next !== 'play';
-  $('playView').hidden = next !== 'play' || completed || !canPlay();
-  $('summaryView').hidden = next !== 'play' || !completed || !canPlay();
-  renderEntry();
+  const pending = false;
+  $('pendingView').hidden = next !== 'play' || !pending;
+  $('playView').hidden = next !== 'play' || completed || pending;
+  $('summaryView').hidden = next !== 'play' || !completed || pending;
   $('collectionView').hidden = next !== 'collection';
   $('playNav').classList.toggle('active', next === 'play');
   $('collectionNav').classList.toggle('active', next === 'collection');
@@ -308,7 +184,6 @@ function setViews(next) {
 function renderPlay() {
   if (!state) return;
   setViews('play');
-  if(!canPlay())return;
   if (state.index >= state.deck.length) { renderSummary(); return; }
   const item = state.deck[state.index];
   $('roundLabel').textContent = t('round', state.roundNumber);
@@ -354,27 +229,23 @@ function setImage(img, art) {
   });
 }
 async function choose(side) {
-  if (!state || !canPlay() || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
+  if (!state || busy || view !== 'play' || state.index >= state.deck.length || !state.presentation) return;
   if (side !== 'skip' && $(side === 'left' ? 'chooseLeft' : 'chooseRight').disabled) return;
   busy = true;
   const expectedRound = state.roundId, expectedIndex = state.index;
   const accepted = await mutateState(current => {
-    if (!canPlay() || current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
-    if(current.history.length>=10000){storageMessage='historyFull';updateStorageWarning();return false;}
+    if (current.roundId !== expectedRound || current.index !== expectedIndex || !current.presentation) return false;
     const item = current.deck[current.index], pair = pairsById.get(item.pairId);
     const chosenId = side === 'left' ? item.leftId : item.rightId;
     const choice = side === 'skip' ? 'skip' : chosenId === pair.a ? 'A' : 'B';
     const chosenAt = new Date().toISOString();
     if (Date.parse(chosenAt) < Date.parse(current.presentation.shownAt)) return false;
     const stacked=Math.abs($('chooseLeft').getBoundingClientRect().top-$('chooseRight').getBoundingClientRect().top)>5;
-    const record = {id:uuid(),sessionId:current.sessionId,roundId:current.roundId,datasetVersion:data.version,pairId:pair.id,leftId:item.leftId,rightId:item.rightId,choice,position:current.index+1,layout:stacked?'stacked':'side-by-side',source:current.source,shownAt:current.presentation.shownAt,chosenAt,elapsedMs:Math.min(3600000,Math.max(0,Date.parse(chosenAt)-Date.parse(current.presentation.shownAt))),profile:copyProfile(current.profile),consent:false,chosenArtworkId:choice==='skip'?null:chosenId};
-    current.history.push(record); if(!current.seen.includes(pair.id))current.seen.push(pair.id); current.index++; current.presentation=null;
-
+    const record = {id:uuid(),sessionId:current.sessionId,roundId:current.roundId,datasetVersion:data.version,pairId:pair.id,leftId:item.leftId,rightId:item.rightId,choice,position:current.index+1,layout:stacked?'stacked':'side-by-side',source:current.source,shownAt:current.presentation.shownAt,chosenAt,elapsedMs:Math.min(3600000,Math.max(0,Date.parse(chosenAt)-Date.parse(current.presentation.shownAt))),profile:copyProfile(current.profile),consent:false};
+    current.history.push(record); current.seen.push(pair.id); current.index++; current.presentation=null;
     return true;
   });
   if (!accepted) {busy=false;displayKey='';renderPlay();return;}
-  const record=state.history.at(-1);
-  if (study) await study.enqueue(record);
   updateCollectionCount(); updateSync();
   $('chooseLeft').disabled=$('chooseRight').disabled=$('skipPair').disabled=true;
   if (side !== 'skip') {
@@ -383,7 +254,6 @@ async function choose(side) {
   }
   $('announcement').textContent=t(side==='skip'?'skippedAnnounce':'picked');
   renderPlay();
-  void syncChoices();
   window.setTimeout(()=>{busy=false;if(view==='play')renderPlay();else renderCollection();},matchMedia('(prefers-reduced-motion: reduce)').matches?30:220);
 }
 function currentRecords() { return state.history.filter(record => record.roundId === state.roundId); }
@@ -452,7 +322,6 @@ function renderCollection() {
   const ids=uniquePicks([...state.history].reverse());$('collectionIntro').textContent=t('collectionIntro',ids.length);$('collectionEmpty').hidden=ids.length>0;renderGallery($('collectionGrid'),ids);
 }
 function openArtwork(id) {
-  const page=(locale==='zh'&&ZH_ARTWORK_PAGES[id])||ARTWORK_PAGES[id];$('detailPage').hidden=!page;if(page)$('detailPage').href=page;
   const art=data.artworks[id];$('detailImage').src=art.image;$('detailImage').alt=art.title;$('artworkTitle').textContent=art.title;$('detailArtist').textContent=artworkText(art,'artist');$('detailDate').textContent=artworkText(art,'date');$('detailSource').href=art.sourceUrl;setZoom(1,0,0);$('artworkDialog').showModal();
 }
 function setZoom(scale,x=zoomX,y=zoomY) {
@@ -497,32 +366,22 @@ async function shareResult() {
   $('shareStatus').hidden=false;
 }
 async function renderComparisons(records) {
-  const request=++communityRequest;
   $('comparisonList').replaceChildren(...records.map((record,index)=>{
     const row=document.createElement('div');row.className='comparison-row';
     const number=document.createElement('span');number.className='comparison-number';number.textContent=String(index+1).padStart(2,'0');
     const name=document.createElement('div'),title=document.createElement('strong'),counts=document.createElement('span');counts.dataset.pair=record.pairId;
-    const id=chosenArtwork(record,pairsById);title.textContent=id?`${t('yourPick')}: ${data.artworks[id].title}`:t('skipped');counts.textContent=collector?'':t('communityUnavailable');name.append(title,counts);
+    const id=chosenArtwork(record,pairsById);title.textContent=id?`${t('yourPick')}: ${data.artworks[id].title}`:t('skipped');name.append(title,counts);
     const stats=document.createElement('div');stats.className='comparison-stats';
     if(id)for(const [label,field]of[['judges','qA'],['model','modelQA']]){const span=document.createElement('span');span.dataset.compare=field;span.classList.toggle('is-highlighted',selectedComparison===field);span.textContent=`${t(label)}: ${judgeDescription(record,field)}`;stats.append(span);}
     row.append(number,name,stats);return row;
   }));
-  if(!collector)return;
-  try{
-    const response=await fetchWithTimeout(`${collectorEndpoint}/experience/community?pairs=${records.map(r=>encodeURIComponent(r.pairId)).join(',')}`,{},8000);if(!response.ok)throw new Error('Unavailable');
-    const result=await response.json();if(request!==communityRequest)return;
-    for(const record of records){const el=$('comparisonList').querySelector(`[data-pair="${record.pairId}"]`);if(!el)continue;const counts=result.pairs?.[record.pairId];el.textContent=record.choice==='skip'?'':counts?.total?t('community',record.choice==='A'?counts.a:counts.b,counts.total):t('noCommunity');}
-  }catch{if(request===communityRequest)$('comparisonList').querySelectorAll('[data-pair]').forEach(el=>el.textContent=t('communityUnavailable'));}
+  // The historical online community endpoint is retired.
 }
 async function nextRound() {
   if(!state||busy)return;
   await mutateState(current=>{
     if(current.index < current.deck.length) return false;
-    const entry=current.nextArtworkId;
-    const options={openingPairIds:preferredOpening,preferredPairIds:westernPairIds};
-    const next=entry?buildArtworkRound(playablePairs,current.seen,entry,options):buildRoundWithPreference(playablePairs,current.seen,options);
-    if(next.newCycle)current.seen=[];
-    if(entry){current.source=`artwork-${entry}`;current.entryArtworkId=entry;current.nextArtworkId=null;}
+    const next=buildRoundWithPreference(playablePairs,current.seen,{openingPairIds:preferredOpening,preferredPairIds:westernPairIds});if(next.newCycle)current.seen=[];
     current.deck=next.deck;current.index=0;current.roundId=uuid();current.roundNumber++;current.presentation=null;
   });
   selectedComparison=null;displayKey='';renderPlay();window.scrollTo({top:0,behavior:'instant'});$('main').focus({preventScroll:true});
@@ -537,91 +396,13 @@ function renderSettings() {
   }));
   $('profileLanguage').value=state.profile.language;
 }
-function renderEntry() {
-  const id=state.nextArtworkId || state.entryArtworkId;
-  const first=state.deck[0];
-  const active=state.nextArtworkId || [first?.leftId,first?.rightId].includes(id);
-  const page=active && ((locale==='zh'&&ZH_ARTWORK_PAGES[id])||ARTWORK_PAGES[id]);
-  $('entryNotice').hidden=!page;
-  if(!page)return;
-  $('entryMessage').textContent=t(state.nextArtworkId?'queuedArtwork':'entryArtwork');
-  $('backArtwork').href=page;
-  $('startArtworkRound').hidden=!state.nextArtworkId || state.index<state.deck.length;
+function updateSync() {
+  if (!state) return;
+  $('syncStatus').textContent = t('onlyDevice');
+  $('connectionNotice').hidden = true;
+  $('pendingView').hidden = true;
 }
-function updateStudyGate(){
-  if(!state)return;
-  if(demoMode){
-    $('consentView').hidden=true;
-    $('withdrawStudy').hidden=$('summaryWithdraw').hidden=true;
-    return;
-  }
-  $('consentAccept').disabled=consentBusy || !study.config || (!study.config.open&&!study.config.preview);
-  $('consentStatus').textContent=t(study.error==='storage'?'consentStorageError':study.error==='pending-exit'?'withdrawPending':study.error?'consentConnectionError':study.config?.preview?'previewStudy':!study.config?.open?'studyClosed':'');
-  $('consentStatus').hidden=!$('consentStatus').textContent;
-  $('withdrawStudy').hidden=$('summaryWithdraw').hidden=!study.active;
-  const shouldGate=view==='play'&&!study.active;
-  $('consentView').hidden=!shouldGate;
-  if(shouldGate){$('playView').hidden=$('summaryView').hidden=true;}
-}
-async function beginStudy(){
-  if(demoMode||consentBusy||!state)return;consentBusy=true;updateStudyGate();
-  const enrolled=await study.enroll(locale);
-  if(enrolled){
-    await mutateState(current=>{
-      const entry=current.nextArtworkId||current.entryArtworkId;
-      const options={openingPairIds:preferredOpening,preferredPairIds:westernPairIds};
-      const next=entry?buildArtworkRound(playablePairs,current.seen,entry,options):buildRoundWithPreference(playablePairs,current.seen,options);
-      if(next.newCycle)current.seen=[];
-      current.deck=next.deck;current.index=0;current.roundId=uuid();current.roundNumber+=current.history.length?1:0;current.presentation=null;current.queue=[];current.consent=false;
-    });
-    displayKey='';renderPlay();
-  }
-  consentBusy=false;updateStudyGate();
-}
-async function withdrawStudy(){
-  // Local revocation happens before navigation and before any network acknowledgment.
-  if(demoMode){location.href=`gallery.html?lang=${locale}`;return;}
-  const ending=study.end();updateStudyGate();
-  await Promise.race([ending,new Promise(resolve=>setTimeout(resolve,200))]);
-  location.href=`gallery.html?study=withdrawn&lang=${locale}`;
-}
-async function checkCollector(){
-  if(demoMode||checkingCollector||!state)return;checkingCollector=true;
-  try{
-    const response=await fetchWithTimeout('./collection_config.json',{cache:'no-cache'},10000);
-    if(!response.ok)throw Error('configuration');const c=await response.json();
-    const secure=/^https:\/\/[a-z0-9.-]+(?:\/[^?#]*)?$/i.test(c.endpoint);
-    const local=location.hostname==='127.0.0.1'&&/^http:\/\/127\.0\.0\.1:\d+$/.test(c.endpoint);
-    if(c.datasetVersion!==data.version||!(secure||local))throw Error('configuration');
-    collectorEndpoint=c.endpoint.replace(/\/$/,'');collector=true;connectionProblem=false;
-    await study.initialize(collectorEndpoint);
-  }catch(error){collector=false;connectionProblem=true;study.error='connection';}
-  finally{checkingCollector=false;updateSync();updateStudyGate();}
-}
-function updateSync(){
-  if(!state)return;
-  if(demoMode){
-    $('contributionBar').hidden=$('connectionNotice').hidden=true;
-    return;
-  }
-  const pending=study.pending;
-  $('contributionBar').hidden=!study.active&&!pending;
-  $('syncStatus').textContent=pending?t('pending',pending):t('studyActive');
-  $('connectionNotice').hidden=!study.active||!study.error;
-  $('syncExplanation').hidden=!pending;
-  $('syncExplanation').textContent=pending?t('localPending'):'';
-  $('rejectedNotice').hidden=!(study.read()?.rejected.length);
-  $('rejectedNotice').textContent=t('rejected');
-  $('retrySave').hidden=!pending||study.sending;
-  $('retrySave').disabled=study.sending;
-}
-async function syncChoices(){if(study)await study.flush();}
 
-$('consentAccept').addEventListener('click',beginStudy);
-for(const id of ['consentBrowse','consentClose'])$(id).addEventListener('click',event=>{event.preventDefault();void withdrawStudy();});
-$('withdrawStudy').addEventListener('click',withdrawStudy);
-$('activeBrowse').addEventListener('click',event=>{event.preventDefault();void withdrawStudy();});
-$('summaryWithdraw').addEventListener('click',withdrawStudy);
 $('chooseLeft').addEventListener('click',()=>choose('left'));
 $('chooseRight').addEventListener('click',()=>choose('right'));
 $('zoomLeft').addEventListener('click',()=>{if(state?.deck[state.index])openArtwork(state.deck[state.index].leftId);});
@@ -648,9 +429,6 @@ $('backToPlay').addEventListener('click',()=>{renderPlay();window.scrollTo({top:
 $('settingsOpen').addEventListener('click',()=>{renderSettings();$('settingsDialog').showModal();});
 $('settingsDone').addEventListener('click',()=>$('settingsDialog').close());
 $('profileLanguage').addEventListener('change',async event=>{const language=event.target.value;await mutateState(current=>{current.profile.language=language;});});
-$('startArtworkRound').addEventListener('click',nextRound);
-$('retrySave').addEventListener('click',checkCollector);
-$('retryConnection').addEventListener('click',checkCollector);
 $('languageToggle').addEventListener('click',()=>{locale=locale==='en'?'zh':'en';try{localStorage.setItem(LOCALE_KEY,locale);}catch{}translate();});
 $('retryLoad').addEventListener('click',load);
 window.addEventListener('keydown',event=>{
@@ -661,9 +439,5 @@ window.addEventListener('keydown',event=>{
   const side=event.key==='ArrowLeft'?'left':event.key==='ArrowRight'?'right':event.key.toLowerCase()==='s'?'skip':null;
   if(side&&state&&view==='play'&&state.index<state.deck.length){event.preventDefault();choose(side);}
 });
-window.addEventListener('storage',event=>{if(event.key!==storageKey||!data||memoryOnly)return;try{const raw=localStorage.getItem(storageKey);if(!raw)return;const latest=JSON.parse(raw);if(!isValidState(latest,data))return;latest.consent=false;latest.queue=[];const changed=latest.roundId!==state.roundId||latest.index!==state.index;state=latest;updateSync();updateCollectionCount();if(changed){displayKey='';if(view==='play')renderPlay();else renderCollection();}}catch{}});
-window.addEventListener('online',checkCollector);
-window.addEventListener('focus',()=>{if(state)checkCollector();});
-window.addEventListener('pageshow',event=>{if(event.persisted&&state&&study){study.ready=false;updateStudyGate();void checkCollector();}});
-setInterval(()=>{if(study&&(study.pending||study.error))checkCollector();},15000);
+window.addEventListener('storage',event=>{if(event.key!==storageKey||!data||memoryOnly)return;try{const raw=localStorage.getItem(storageKey);if(!raw)return;const latest=JSON.parse(raw);if(!isValidState(latest,data))return;const changed=latest.roundId!==state.roundId||latest.index!==state.index;state=latest;$('contribute').checked=state.consent;updateSync();updateCollectionCount();if(changed){displayKey='';if(view==='play')renderPlay();else renderCollection();}}catch{}});
 translate();load();
