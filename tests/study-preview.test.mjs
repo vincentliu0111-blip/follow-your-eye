@@ -23,6 +23,17 @@ test('preview uses exactly 50 fixed candidate pairs and 15 distinct positions', 
   assert.deepEqual(deck.map(p => p.position), Array.from({length: 15}, (_, i) => i + 1));
 });
 
+test('visually flagged pairs are replaced with the reviewed same-period candidates', () => {
+  assert.deepEqual([pairs[30].pair_id, pairs[30].a, pairs[30].b],
+    ['met-671032-671008', '671032', '671008']);
+  assert.deepEqual([pairs[43].pair_id, pairs[43].a, pairs[43].b],
+    ['met-54712-54644', '54712', '54644']);
+  const ids = new Set(pairs.flatMap(p => [p.a, p.b]));
+  for (const excluded of ['37930', '37929', '440727', '439631']) {
+    assert.equal(ids.has(excluded), false, `flagged artwork ${excluded} remains in the preview`);
+  }
+});
+
 test('skips and unavailable predictions cannot produce a made-up agreement rate', () => {
   assert.deepEqual(summary([{pair_id: pairs[0].pair_id, choice: 'skip'}]), {comparable: 0, same: 0, percent: null});
   assert.deepEqual(summary([{pair_id: pairs[0].pair_id, choice: 'a'}]), {comparable: 0, same: 0, percent: null});
