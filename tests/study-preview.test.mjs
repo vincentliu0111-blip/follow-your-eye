@@ -23,14 +23,18 @@ test('preview uses exactly 50 fixed candidate pairs and 15 distinct positions', 
   assert.deepEqual(deck.map(p => p.position), Array.from({length: 15}, (_, i) => i + 1));
 });
 
-test('visually flagged pairs are replaced with the reviewed same-period candidates', () => {
-  assert.deepEqual([pairs[30].pair_id, pairs[30].a, pairs[30].b],
-    ['met-671032-671008', '671032', '671008']);
-  assert.deepEqual([pairs[43].pair_id, pairs[43].a, pairs[43].b],
-    ['met-54712-54644', '54712', '54644']);
-  const ids = new Set(pairs.flatMap(p => [p.a, p.b]));
-  for (const excluded of ['37930', '37929', '440727', '439631']) {
-    assert.equal(ids.has(excluded), false, `flagged artwork ${excluded} remains in the preview`);
+test('every displayed artwork is a Met European oil painting', () => {
+  const catalog = JSON.parse(readFileSync(resolve(root, 'web/met_catalog.json'), 'utf8'));
+  const departments = JSON.parse(readFileSync(resolve(root, 'Data/met_department_snapshot_v1.json'), 'utf8')).departmentById;
+  const byId = new Map(catalog.artworks.map(art => [String(art.id), art]));
+  for (const pair of pairs) {
+    for (const id of [pair.a, pair.b]) {
+      const art = byId.get(id);
+      assert.ok(art, `missing Met catalog record ${id}`);
+      assert.equal(departments[id], 'European Paintings', `wrong department ${id}`);
+      assert.match(art.medium, /^Oil on /i, `not a pure oil painting ${id}`);
+      assert.doesNotMatch(art.medium, /gold/i, `mixed oil and gold medium ${id}`);
+    }
   }
 });
 
