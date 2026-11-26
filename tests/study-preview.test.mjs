@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
-import {PAIRS_PER_SESSION, selectPairs, summary} from '../web/study-preview/core.mjs';
+import {PAIRS_PER_SESSION, eligibleForProlificPreview, selectPairs, summary} from '../web/study-preview/core.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -41,6 +41,13 @@ test('every displayed artwork is a Met European oil painting', () => {
 test('skips and unavailable predictions cannot produce a made-up agreement rate', () => {
   assert.deepEqual(summary([{pair_id: pairs[0].pair_id, choice: 'skip'}]), {comparable: 0, same: 0, percent: null});
   assert.deepEqual(summary([{pair_id: pairs[0].pair_id, choice: 'a'}]), {comparable: 0, same: 0, percent: null});
+});
+
+test('Prolific preview eligibility matches the saved adult age and U.S. filters', () => {
+  for (const age of ['18', '100']) assert.equal(eligibleForProlificPreview(age, 'United States'), true);
+  for (const age of ['', '17', '18.5', '101', '121']) assert.equal(eligibleForProlificPreview(age, 'US'), false);
+  assert.equal(eligibleForProlificPreview('25', 'CA'), false);
+  assert.equal(eligibleForProlificPreview('25', ' us '), true);
 });
 
 test('preview is marked noindex and contains no answer-upload or persistence path', () => {

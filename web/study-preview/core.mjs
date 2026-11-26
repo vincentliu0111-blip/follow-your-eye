@@ -1,4 +1,13 @@
 export const PAIRS_PER_SESSION = 15;
+export const PROLIFIC_MIN_AGE = 18;
+export const PROLIFIC_MAX_AGE = 100;
+
+export function eligibleForProlificPreview(ageValue, countryValue) {
+  const age = Number(ageValue);
+  return String(ageValue).trim() !== '' && Number.isInteger(age) &&
+    age >= PROLIFIC_MIN_AGE && age <= PROLIFIC_MAX_AGE &&
+    ['US', 'UNITED STATES'].includes(String(countryValue).trim().toUpperCase());
+}
 
 export function selectPairs(pairs, random = Math.random) {
   if (!Array.isArray(pairs) || pairs.length < PAIRS_PER_SESSION) throw new Error('At least 15 pairs required');
